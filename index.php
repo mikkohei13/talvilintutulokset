@@ -4,17 +4,45 @@ header('Content-Type: text/html; charset=utf-8');
 class talvilinnut
 {
 	public $resultArray = Array();
-	public $url = "http://koivu.luomus.fi/talvilinnut/census.php?year=2014&census=1&json";
+	public $url = "";
 	public $area = "";
+    public $source = "";
+    public $start = "";
 
     public function __construct()
-    {    	
-    	$this->fetchData();
+    {
+        $this->start = microtime(TRUE);
+        $this->createURL();
+        $this->fetchData();
 
     	if (empty($this->resultArray))
     	{
     		exit("Tältä ajalta ei ole vielä laskentoja.");
     	}
+    }
+
+    public function createURL()
+    {
+        $year = date("Y");
+        $monthDay = ltrim(date("md"), 0);
+
+        if ($monthDay >= 1101 && $monthDay <= 1224)
+        {
+            $census = 1;
+            $title = "Syyslaskenta $year";
+        }
+        elseif ($monthDay >= 1225 || $monthDay <= 220)
+        {
+            $census = 2;
+            $title = "Talvilaskenta $year - " . ($year + 1);
+        }
+        else
+        {
+            $census = 3;
+            $title = "Kevätlaskenta $year";
+        }
+        $this->url = "http://koivu.luomus.fi/talvilinnut/census.php?year=$year&census=$census&json";
+        echo $this->url . " ";
     }
 
     public function fetchData()
@@ -27,22 +55,24 @@ class talvilinnut
 		{
 			$json = file_get_contents($this->url);
 			$this->resultArray = json_decode($json, TRUE);
+            $this->source = $this->url;
 
 			// Save to cache
 			file_put_contents($filename, $json);
 		}
 		else
 		{
-			// Get data from file
+			// Get data from cache
 			$json = file_get_contents($filename);
 			$this->resultArray = json_decode($json, TRUE);
+            $this->source = $filename;
 		}
     }
 
     public function fileIsOld($filename)
     {
     	// @ because file might not exist
-    	$hours = 12; 
+    	$hours = 1; 
     	if (time() - @filemtime($filename) > ($hours * 3600))
     	{
     		return TRUE;
@@ -55,13 +85,17 @@ class talvilinnut
 
     public function filterData()
     {
-    	foreach ($this->resultArray as $itemNumber => $routeData)
-    	{
-    		if (3 != $routeData['areaID'])
-    		{
-    			unset($this->resultArray[$itemNumber]);
-    		}
-    	}
+        if (isset($_GET["area"]))
+        {
+            $areaDirty = $_GET["area"];
+        	foreach ($this->resultArray as $itemNumber => $routeData)
+        	{
+        		if ($areaDirty != $routeData['areaID'])
+        		{
+        			unset($this->resultArray[$itemNumber]);
+        		}
+        	}
+        }
 	}
 
     public function debug()
@@ -113,6 +147,18 @@ class talvilinnut
     	$html .= "";
     	return $html;
 	}
+
+    public function getExcecutionTime()
+    {
+        $end = microtime(TRUE);
+        $time = $end - $this->start;
+        return round($time, 3);
+    }
+
+    public function getStats()
+    {
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
+    }
 }
 
 $talvilinnut = new talvilinnut();
@@ -120,6 +166,10 @@ $talvilinnut = new talvilinnut();
 $talvilinnut->filterData();
 
 echo $talvilinnut->getRouteList();
+
+echo $talvilinnut->getStats();
+
+
 
 //$talvilinnut->debug();
 
