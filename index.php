@@ -9,6 +9,8 @@ class talvilinnut
     public $source = "";
     public $start = "";
     public $title = "";
+    public $routeFullData = Array();
+    public $speciesCounts = Array();
 
     public function __construct()
     {
@@ -70,10 +72,9 @@ class talvilinnut
 		}
     }
 
-    public function fileIsOld($filename)
+    public function fileIsOld($filename, $hours = 1)
     {
     	// @ because file might not exist
-    	$hours = 1; 
     	if (time() - @filemtime($filename) > ($hours * 3600))
     	{
     		return TRUE;
@@ -164,17 +165,93 @@ class talvilinnut
         return round($time, 3);
     }
 
+    public function getExecutionStats()
+    {
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
+    }
+
+    public function getRouteFullData()
+    {
+        foreach ($this->resultArray as $itemNumber => $routeData)
+        {
+            $DocumentID = $routeData['documentID'];
+            $filename = "cache/documentID_" . $DocumentID . ".json";
+
+            if ($this->fileIsOld($filename, 24))
+            {
+                $xml = file_get_contents("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
+
+                // XML to JSON
+                $xml = simplexml_load_string($xml);
+                $json = json_encode($xml);
+                $this->routeFullData[$DocumentID] = json_decode($json, TRUE);
+
+                // Save to cache
+                file_put_contents($filename, $json);
+            }
+            else
+            {
+                // Get data from cache
+                $json = file_get_contents($filename);
+                $this->routeFullData[$DocumentID] = json_decode($json, TRUE);
+            }
+        }
+//        echo "s";
+    }
+
     public function getStats()
     {
-        return "<p id=\"talvilintutulokset-debug\" style=\"display: none;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
+//        print_r($this->routeFullData); // debug
+        foreach ($this->routeFullData as $itemNumber => $routeData)
+        {
+            echo "FOOB";
+            print_r($routeData);
+
+            foreach ($routeData['DataSet'] as $allUnits => $allUnitsArray)
+            {
+                foreach ($allUnitsArray as $units => $unitsArray)
+                {
+                    foreach ($unitsArray as $unit => $unitArray)
+                    {
+                        foreach ($unitArray as $unitNumber => $unitItems)
+                        {
+                            print_r($unitItems);
+                            $sp = $unitItems['MeasurementsOrFacts']['MeasurementOrFact'][0]['MeasurementOrFactAtomised']['LowerValue'];
+                            $count = $unitItems['MeasurementsOrFacts']['MeasurementOrFact'][2]['MeasurementOrFactAtomised']['LowerValue']; // ei aina 2!!!
+                            $this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $count;
+
+    //                        print_r($unitItems);
+    //                        echo "--------------------------------------------------";
+                        }
+                    }
+                    
+    //                exit();
+     //               print_r($unitArray[0]['MeasurementsOrFacts']['MeasurementOrFact'][0]['MeasurementOrFactAtomised']['LowerValue']);
+                }
+            }
+        }
+
+        krsort($this->speciesCounts);
+        print_r($this->speciesCounts);
     }
+
 }
 
 $talvilinnut = new talvilinnut();
 
-echo $talvilinnut->getRouteList();
 
-echo $talvilinnut->getStats();
+if (isset($_GET['stats']))
+{
+    $talvilinnut->getRouteFullData();
+
+    echo $talvilinnut->getStats();
+    echo $talvilinnut->getExecutionStats();
+}
+else
+{
+    echo $talvilinnut->getRouteList();
+    echo $talvilinnut->getExecutionStats();
+}
 
 
 
