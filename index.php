@@ -8,12 +8,14 @@ class talvilinnut
 	public $area = "";
     public $source = "";
     public $start = "";
+    public $title = "";
 
     public function __construct()
     {
         $this->start = microtime(TRUE);
         $this->createURL();
         $this->fetchData();
+        $this->filterData();
 
     	if (empty($this->resultArray))
     	{
@@ -29,20 +31,19 @@ class talvilinnut
         if ($monthDay >= 1101 && $monthDay <= 1224)
         {
             $census = 1;
-            $title = "Syyslaskenta $year";
+            $this->title = "Syyslaskenta $year";
         }
         elseif ($monthDay >= 1225 || $monthDay <= 220)
         {
             $census = 2;
-            $title = "Talvilaskenta $year - " . ($year + 1);
+            $this->title = "Talvilaskenta $year - " . ($year + 1);
         }
         else
         {
             $census = 3;
-            $title = "Kevätlaskenta $year";
+            $this->title = "Kevätlaskenta $year";
         }
         $this->url = "http://koivu.luomus.fi/talvilinnut/census.php?year=$year&census=$census&json";
-        echo $this->url . " ";
     }
 
     public function fetchData()
@@ -96,6 +97,14 @@ class talvilinnut
         		}
         	}
         }
+
+        // Sort by date desc
+        usort($this->resultArray, function($a, $b) {
+            return $b['date'] - $a['date'];
+        });
+
+        print_r ($this->resultArray);
+
 	}
 
     public function debug()
@@ -131,7 +140,7 @@ class talvilinnut
 
     public function getRouteList()
     {
-    	$html = "";
+    	$html = "<h4>" . $this->title . ":</h4>";
     	foreach ($this->resultArray as $itemNumber => $routeData)
     	{
     		$html .= "
@@ -157,13 +166,11 @@ class talvilinnut
 
     public function getStats()
     {
-        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: none;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
     }
 }
 
 $talvilinnut = new talvilinnut();
-
-$talvilinnut->filterData();
 
 echo $talvilinnut->getRouteList();
 
