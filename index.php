@@ -199,40 +199,61 @@ class talvilinnut
 //        echo "s";
     }
 
-    public function getStats()
+    public function countStats()
     {
+        $species = "";
+        $count = 0;
 //        print_r($this->routeFullData); // debug
         foreach ($this->routeFullData as $itemNumber => $routeData)
         {
-            echo "FOOB";
-            print_r($routeData);
-
-            foreach ($routeData['DataSet'] as $allUnits => $allUnitsArray)
+            // Remove all data exept units-elements
+            foreach ($routeData['DataSet'] as $element => $elementArray)
             {
-                foreach ($allUnitsArray as $units => $unitsArray)
+                if ("Units" != $element)
                 {
-                    foreach ($unitsArray as $unit => $unitArray)
-                    {
-                        foreach ($unitArray as $unitNumber => $unitItems)
-                        {
-                            print_r($unitItems);
-                            $sp = $unitItems['MeasurementsOrFacts']['MeasurementOrFact'][0]['MeasurementOrFactAtomised']['LowerValue'];
-                            $count = $unitItems['MeasurementsOrFacts']['MeasurementOrFact'][2]['MeasurementOrFactAtomised']['LowerValue']; // ei aina 2!!!
-                            $this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $count;
+                   unset($routeData['DataSet'][$element]);
+                }
+            }
 
-    //                        print_r($unitItems);
-    //                        echo "--------------------------------------------------";
+            // There can be several units-elements...
+            foreach ($routeData['DataSet'] as $units_s => $units)
+            {
+                // ...which contain several unit-elements
+                foreach ($units[0]['Unit'] as $observationNumber => $observationArray)
+                {
+
+                    $simpleObsArray = $observationArray['MeasurementsOrFacts']['MeasurementOrFact'];
+
+                    // pick species and count
+                    foreach ($simpleObsArray as $index => $atomized)
+                    {
+                        $atomizedSimple = $atomized['MeasurementOrFactAtomised'];
+
+                        if ("InformalNameString" == @$atomizedSimple['Parameter'])
+                        {
+                            $species = @$atomizedSimple['LowerValue'];
+                        }
+                        elseif ("Yksilömäärä" == @$atomizedSimple['Parameter'])
+                        {
+                            $count = @$atomizedSimple['LowerValue'];
                         }
                     }
-                    
-    //                exit();
-     //               print_r($unitArray[0]['MeasurementsOrFacts']['MeasurementOrFact'][0]['MeasurementOrFactAtomised']['LowerValue']);
+
+                    // sum
+                    @$this->speciesCounts[$species] = $this->speciesCounts[$species] + $count;
                 }
             }
         }
 
-        krsort($this->speciesCounts);
-        print_r($this->speciesCounts);
+        arsort($this->speciesCounts);
+    }
+
+    public function getStatsGraph()
+    {
+        foreach ($this->speciesCounts as $species => $count)
+        {
+            echo $species. ": " . $count . "<br />";
+        }
     }
 
 }
@@ -244,7 +265,8 @@ if (isset($_GET['stats']))
 {
     $talvilinnut->getRouteFullData();
 
-    echo $talvilinnut->getStats();
+    echo $talvilinnut->countStats();
+    echo $talvilinnut->getStatsGraph();
     echo $talvilinnut->getExecutionStats();
 }
 else
