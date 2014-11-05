@@ -3,6 +3,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 class talvilinnut
 {
+    public $basePath = "/tests/talvilintutulokset/";
 	public $resultArray = Array();
 	public $url = "";
 	public $area = "";
@@ -248,45 +249,66 @@ class talvilinnut
         arsort($this->speciesCounts);
     }
 
-    public function getStatsGraph()
+    public function echoStatsGraph()
     {
+        $list = "";
+        $i = 1;
+        echo "<h4>Kokonaisyksilömäärät</h4>
+<style>
+#stats-list p
+{
+    -webkit-columns: 15em 3;
+    -moz-columns: 15em 3;
+    columns: 15em 3;
+}
+#stats-list .number
+{
+    display: inline-block;
+    width: 1.5em;
+}
+#stats-list em
+{
+    display: inline-block;
+    width: 10em;
+}
+</style>
+        ";
+        ?>
+        <canvas id="myChart" width="400" height="400"></canvas>
+        <script src="<?php echo $this->basePath; ?>vendor/Chart.min.js"></script>
+        <script>
+        var options =
+            {
+                animateRotate: false,
+            };
+        var data = [
+        <?php
         foreach ($this->speciesCounts as $species => $count)
         {
-            echo $species. ": " . $count . "<br />";
+            echo "
+            {
+                label: \"$species\",
+                value: $count,
+                color:\"#f8dd38\",
+                highlight: \"#d5f16d\" 
+            },
+            ";
+            $list .= "<span><span class=\"number\">$i.</span> <em>$species</em> <span class=\"count\">$count</span></span><br />";
+            $i++;
         }
         ?>
-        <div id="container" style="width:100%; height:400px;"></div>
-
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script src="http://code.highcharts.com/highcharts.js"></script>
-        <script>
-        $(function () { 
-            $('#container').highcharts({
-                chart: {
-                    type: 'bar'
-                },
-                title: {
-                    text: 'Fruit Consumption'
-                },
-                xAxis: {
-                    categories: ['Apples', 'Bananas', 'Oranges']
-                },
-                yAxis: {
-                    title: {
-                        text: 'Fruit eaten'
-                    }
-                },
-                series: [{
-                    name: 'Jane',
-                    data: [1, 0, 4]
-                }, {
-                    name: 'John',
-                    data: [5, 7, 3]
-                }]
-            });
-        });
+        ];
+        // Get the context of the canvas element we want to select
+        var ctx = document.getElementById("myChart").getContext("2d");
+        // For a pie chart
+        var myChart = new Chart(ctx).Doughnut(data,options);
         </script>
         <?php
+        echo "
+        <div id=\"stats-list\">
+        <p>$list</p>
+        </div>
+        ";
     }
 
 }
@@ -299,7 +321,7 @@ if (isset($_GET['stats']))
     $talvilinnut->getRouteFullData();
 
     echo $talvilinnut->countStats();
-    echo $talvilinnut->getStatsGraph();
+    $talvilinnut->echoStatsGraph();
     echo $talvilinnut->getExecutionStats();
 }
 else
