@@ -103,7 +103,7 @@ class talvilinnut
             return $b['date'] - $a['date'];
         });
 
-        print_r ($this->resultArray);
+//        print_r ($this->resultArray);
 
 	}
 
