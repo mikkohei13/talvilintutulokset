@@ -170,7 +170,10 @@ class talvilinnut
 
     public function getCiting()
     {
-        return "<p id=\"talvilintutulokset-cite\">Talvilintulaskentojen tulokset: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</p>";
+        return "<p id=\"talvilintutulokset-cite\">
+        <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</span>
+        <span class=\"service\">Powered by <a href=\"https://github.com/mikkohei13/talvilintutulokset\">talvilintutulokset</a></span>
+        </p>";
     }
 
     public function getExecutionStats()
