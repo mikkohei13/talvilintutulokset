@@ -6,11 +6,12 @@ Hakee datan Luomuksen verkkopalvelusta:
 * Yksittäisen laskennat tulokset XML-muodossa, esim. http://hatikka.fi/?page=view&id=1134228&source=2&xsl=false
 
 ===Käyttö:
-* Kaikki reitit: http://EXAMPLE.COM/talvilintutulokset/
-* Vain alueen 3 (= Tringa) reitit: http://EXAMPLE.COM/talvilintutulokset/?area=3
+* Kaikki reitit: http://tringa.fi/tools/talvilintutulokset/
+* Vain alueen 3 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=3
+* Vain alueen 3 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=3&stats
 
 ===Tulokset saa sivuilla vaikka jQuerylla:
 
-	jQuery.get( "http://EXAMPLE.COM/talvilintutulokset/?area=3", function( data ) {
+	jQuery.get( "http://tringa.fi/tools/talvilintutulokset/?area=3", function( data ) {
 	  jQuery( "#talvilintulaskennat" ).html( data );
 	});
