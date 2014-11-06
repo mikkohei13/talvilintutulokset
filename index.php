@@ -3,14 +3,14 @@ header('Content-Type: text/html; charset=utf-8');
 
 class talvilinnut
 {
-    public $basePath = "/tests/talvilintutulokset/";
+    public $basePath = "/tools/talvilintutulokset/";
 	public $resultArray = Array();
 	public $url = "";
 	public $area = "";
     public $source = "";
     public $start = "";
     public $title = "";
-    public $routeFullData = Array();
+    public $routesXMLarray = Array();
     public $speciesCounts = Array();
 
     public function __construct()
@@ -168,7 +168,7 @@ class talvilinnut
 
     public function getExecutionStats()
     {
-        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: none;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
     }
 
     public function getRouteFullData()
@@ -176,25 +176,24 @@ class talvilinnut
         foreach ($this->resultArray as $itemNumber => $routeData)
         {
             $DocumentID = $routeData['documentID'];
-            $filename = "cache/documentID_" . $DocumentID . ".json";
+            $filename = "cache/documentID_" . $DocumentID . ".xml";
 
             if ($this->fileIsOld($filename, 24))
             {
-                $xml = file_get_contents("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
-
-                // XML to JSON
-                $xml = simplexml_load_string($xml);
-                $json = json_encode($xml);
-                $this->routeFullData[$DocumentID] = json_decode($json, TRUE);
+                $xml = simplexml_load_file("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
+                $this->routesXMLarray[$DocumentID] = $xml;
 
                 // Save to cache
-                file_put_contents($filename, $json);
+                $xml->asXml($filename);
+//                file_put_contents($filename, $xml);
+                echo "<p>from Hatikka\n";
             }
             else
             {
                 // Get data from cache
-                $json = file_get_contents($filename);
-                $this->routeFullData[$DocumentID] = json_decode($json, TRUE);
+                $xml = simplexml_load_file($filename);
+                $this->routesXMLarray[$DocumentID] = $xml;
+                echo "<p>from Cache\n";
             }
         }
 //        echo "s";
@@ -204,9 +203,13 @@ class talvilinnut
     {
         $species = "";
         $count = 0;
-//        print_r($this->routeFullData); // debug
-        foreach ($this->routeFullData as $itemNumber => $routeData)
+
+        // Goes through all routes
+        foreach ($this->routesXMLarray as $routeXML)
         {
+            print_r($routeXML);
+
+            /*
             // Remove all data exept units-elements
             foreach ($routeData['DataSet'] as $element => $elementArray)
             {
@@ -216,12 +219,24 @@ class talvilinnut
                 }
             }
 
-            // There can be several units-elements...
-            foreach ($routeData['DataSet'] as $units_s => $units)
+            // One route
+            print_r($routeData); // debug
+
+            // There can be 1-2 subelements of the units-element: one for basic species, possibly one for extra species...
+            foreach ($routeData['DataSet']['Units'] as $units_s => $units)
             {
-                // ...which contain several unit-elements
-                foreach ($units[0]['Unit'] as $observationNumber => $observationArray)
+//              print_r($units); // debug
+                // Tässä phyhum näkyy
+                if (empty($units) || ! is_array($units))
                 {
+                    continue;
+                }
+
+                // ...which can contain several unit-elements
+                foreach ($units['Unit'] as $observationNumber => $observationArray)
+                {
+
+                    print_r($observationArray); // debug
 
                     $simpleObsArray = $observationArray['MeasurementsOrFacts']['MeasurementOrFact'];
 
@@ -243,7 +258,9 @@ class talvilinnut
                     // sum
                     @$this->speciesCounts[$species] = $this->speciesCounts[$species] + $count;
                 }
+
             }
+            */
         }
 
         arsort($this->speciesCounts);
@@ -254,24 +271,24 @@ class talvilinnut
         $list = "";
         $i = 1;
         echo "<h4>Kokonaisyksilömäärät</h4>
-<style>
-#stats-list p
-{
-    -webkit-columns: 15em 3;
-    -moz-columns: 15em 3;
-    columns: 15em 3;
-}
-#stats-list .number
-{
-    display: inline-block;
-    width: 1.5em;
-}
-#stats-list em
-{
-    display: inline-block;
-    width: 10em;
-}
-</style>
+            <style>
+            #stats-list p
+            {
+                -webkit-columns: 15em 3;
+                -moz-columns: 15em 3;
+                columns: 15em 3;
+            }
+            #stats-list .number
+            {
+                display: inline-block;
+                width: 1.5em;
+            }
+            #stats-list em
+            {
+                display: inline-block;
+                width: 10em;
+            }
+            </style>
         ";
         ?>
         <canvas id="myChart" width="400" height="400"></canvas>
@@ -321,7 +338,7 @@ if (isset($_GET['stats']))
     $talvilinnut->getRouteFullData();
 
     echo $talvilinnut->countStats();
-    $talvilinnut->echoStatsGraph();
+//    $talvilinnut->echoStatsGraph();
     echo $talvilinnut->getExecutionStats();
 }
 else
