@@ -3,7 +3,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 class talvilinnut
 {
-    public $basePath = "/tools/talvilintutulokset/";
+    public $basePath = "";
 	public $resultArray = Array();
 	public $url = "";
 	public $area = "";
@@ -16,6 +16,8 @@ class talvilinnut
     public function __construct()
     {
         $this->start = microtime(TRUE);
+        $this->basePath = dirname($_SERVER['REQUEST_URI']) . "/";
+
         $this->createURL();
         $this->fetchData();
         $this->filterData();
@@ -164,6 +166,11 @@ class talvilinnut
         $end = microtime(TRUE);
         $time = $end - $this->start;
         return round($time, 3);
+    }
+
+    public function getCiting()
+    {
+        return "<p id=\"talvilintutulokset-cite\">Talvilintulaskentojen tulokset: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</p>";
     }
 
     public function getExecutionStats()
@@ -368,11 +375,13 @@ if (isset($_GET['stats']))
 
     echo $talvilinnut->countStats();
     $talvilinnut->echoStatsGraph();
+    echo $talvilinnut->getCiting();
     echo $talvilinnut->getExecutionStats();
 }
 else
 {
     echo $talvilinnut->getRouteList();
+    echo $talvilinnut->getCiting();
     echo $talvilinnut->getExecutionStats();
 }
 
