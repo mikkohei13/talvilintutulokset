@@ -518,4 +518,10 @@ $fullNames['Sciurus vulgaris'] = "Orava";
 $fullNames['Odocoileus virginianus'] = "Valkohäntäpeura";
 $fullNames['Capreolus capreolus'] = "Metsäkauris";
 $fullNames['Alces alces'] = "Hirvi";
+$fullNames['Vulpes vulpes'] = "Kettu";
+$fullNames['Lepus europaeus'] = "Rusakko";
+$fullNames['Lepus timidus'] = "Metsäjänis";
+$fullNames['Lepus timidus'] = "Metsäjänis";
+$fullNames['Oryctolagus cuniculus'] = "Kaniini";
+$fullNames['Kani'] = "Kaniini";
 ?>
