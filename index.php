@@ -207,7 +207,44 @@ class talvilinnut
         // Goes through all routes
         foreach ($this->routesXMLarray as $routeXML)
         {
-            print_r($routeXML);
+            $dataset = $routeXML->DataSet;
+
+            foreach ($dataset->Units as $unit)
+            {
+//                $dataset = $routeXML->DataSet;
+
+                foreach ($unit as $species)
+                {
+                    $measurement = $species->MeasurementsOrFacts->MeasurementOrFact;
+                    $sp = "";
+                    $count = "";
+
+                    foreach ($measurement as $key => $atomized)
+                    {
+//                        print_r($atomized);
+//                        echo "\n--atomized END--\n";
+                        if ($atomized->MeasurementOrFactAtomised->Parameter == "InformalNameString")
+                        {
+//                            echo "HIT parameter: ". $atomized->MeasurementOrFactAtomised->Parameter . " \n";
+                            $sp = (string) $atomized->MeasurementOrFactAtomised->LowerValue;
+                        }
+                        elseif ($atomized->MeasurementOrFactAtomised->Parameter == "Yksilömäärä")
+                        {
+                            $count = (int) $atomized->MeasurementOrFactAtomised->LowerValue;
+                        }
+                        
+
+                    }
+
+                    // Sum
+                    echo "RESULT: " . $sp . ": " . $count . " <br />\n";
+                    $this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $count;
+
+//                    $speciesSimple = $species->MeasurementsOrFacts->MeasurementOrFact;
+
+
+                }
+            }
 
             /*
             // Remove all data exept units-elements
@@ -264,6 +301,7 @@ class talvilinnut
         }
 
         arsort($this->speciesCounts);
+        print_r(@$this->speciesCounts);
     }
 
     public function echoStatsGraph()
