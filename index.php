@@ -448,14 +448,38 @@ class talvilinnut
         print_r ($this->speciesCounts);
         print_r ($areaStats);
 
+        echo "
+            <style>
+            .pos
+            {
+                background-color: #cfc;
+            }
+            .neg
+            {
+                background-color: #fcc;
+            }
+            </style>
+        ";
+
         foreach ($this->speciesCounts as $species => $count)
         {
-            echo "\n
-                $species
-                $count yksilöä
-                " . round(($count / ($this->totalLengthMeters / 10000)), 1) . " yksilöä / 10 km
-                keskimäärin
-                " . round(($areaStats['speciesCounts'][$species] / ($areaStats['totalLengthMeters'] / 10000)), 1) . " yksilöä / 10 km
+            $localAverage = round(($count / ($this->totalLengthMeters / 10000)), 1);
+            $areaAverage = round(($areaStats['speciesCounts'][$species] / ($areaStats['totalLengthMeters'] / 10000)), 1);
+            if ($localAverage < $areaAverage)
+            {
+                $class = "neg";
+            }
+            else
+            {
+                $class = "pos";
+            }
+
+            echo "<p>
+                $species:
+                $count yksilöä, eli 
+                <span class=\"$class\">
+                " . $localAverage . " yksilöä / 10 km</span>. 
+                (ka. " . $areaAverage . " yksilöä / 10 km)
             ";
         }
     }
