@@ -12,6 +12,7 @@ class talvilinnut
     public $title = "";
     public $routesXMLarray = Array();
     public $speciesCounts = Array();
+    public $totalLengthMeters = FALSE;
 
     public function __construct()
     {
@@ -211,19 +212,34 @@ class talvilinnut
 
     public function getStatsJSON()
     {
-        $json = json_encode($this->speciesCounts);
-        return $json;
+        $array['speciesCounts'] = $this->speciesCounts;
+        $array['totalLengthMeters'] = $this->totalLengthMeters;
+
+        return json_encode($array);
     }
 
     public function countStats()
     {
         $species = "";
         $count = 0;
+        $totalLengthMeters = 0;       
 
         // Goes through all routes
         foreach ($this->routesXMLarray as $routeXML)
         {
+
             $dataset = $routeXML->DataSet;
+//            print_r ($dataset);
+
+            foreach ($dataset->Gathering->SiteMeasurementsOrFacts->SiteMeasurementOrFact as $siteFact)
+            {
+//                print_r ($siteFact);
+//                echo "-----------------------------\n";
+                if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
+                {
+                    $totalLengthMeters = $totalLengthMeters + $siteFact->MeasurementOrFactAtomised->LowerValue;
+                }
+            }
 
             foreach ($dataset->Units as $unit)
             {
@@ -266,19 +282,24 @@ class talvilinnut
         arsort($this->speciesCounts);
         $this->speciesCounts = $this->convertNames($this->speciesCounts);
 //        print_r(@$this->speciesCounts);
+
+        $this->totalLengthMeters = $totalLengthMeters;
     }
 
     public function echoStatsGraph()
     {
+        $totalLength10kms = $this->totalLengthMeters / 10000;
         $list = "";
         $i = 1;
+
+
         echo "<h4>Kokonaisyksilömäärät</h4>
             <style>
             #stats-list p
             {
-                -webkit-columns: 15em 3;
-                -moz-columns: 15em 3;
-                columns: 15em 3;
+                -webkit-columns: 20em 2;
+                -moz-columns: 20em 2;
+                columns: 20em 2;
             }
             #stats-list .number
             {
@@ -289,6 +310,15 @@ class talvilinnut
             {
                 display: inline-block;
                 width: 10em;
+            }
+            #stats-list .count
+            {
+                display: inline-block;
+                width: 4em;
+            }
+            #stats-list .count10km span
+            {
+                color: #999;
             }
             </style>
         ";
@@ -312,7 +342,7 @@ class talvilinnut
                 highlight: \"#d5f16d\" 
             },
             ";
-            $list .= "<span><span class=\"number\">$i.</span> <em>$species</em> <span class=\"count\">$count</span></span><br />";
+            $list .= "<span><span class=\"number\">$i.</span> <em>$species</em> <span class=\"count\">$count</span> <span class=\"count10km\">". round(($count / $totalLength10kms), 1) . " <span>/ 10 km</span></span></span><br />";
             $i++;
         }
         ?>
@@ -327,6 +357,7 @@ class talvilinnut
         <div id=\"stats-list\">
         <p>$list</p>
         </div>
+        <p id=\"stats-length\">Reittien pituus yhteensä <span>" . round(($this->totalLengthMeters / 1000), 1) . "</span> km</p>
         ";
     }
 
