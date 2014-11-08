@@ -512,6 +512,11 @@ $fullNames['Colsp'] = "Kyyhkylaji";
 $fullNames['Col sp'] = "Kyyhkylaji";
 $fullNames['Buteosp'] = "Hiirihaukkalaji";
 $fullNames['Buteo sp'] = "Hiirihaukkalaji";
+$fullNames['Stercorarius sp'] = "Kihulaji";
+$fullNames['Cygnus sp'] = "Joutsenlaji";
+$fullNames['Cygnussp'] = "Joutsenlaji";
+$fullNames['Larus sp'] = "Lokkilaji";
+$fullNames['Larussp'] = "Lokkilaji";
 
 // Mammals
 $fullNames['Sciurus vulgaris'] = "Orava";
