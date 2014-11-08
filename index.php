@@ -17,6 +17,13 @@ class talvilinnut
     public $speciesOnRoutes = Array();
     public $individualAverage = FALSE;
     public $speciesAverage = FALSE;
+    public $routeListHTML = "";
+    public $citingHTML = "
+        <p id=\"talvilintutulokset-cite\">
+            <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</span>
+            <span class=\"service\">Powered by <a href=\"https://github.com/mikkohei13/talvilintutulokset\">talvilintutulokset</a></span>
+        </p>
+    ";
 
     public function __construct()
     {
@@ -27,6 +34,8 @@ class talvilinnut
         $this->createRouteListApiURL();
         $this->fetchDataFromCacheOrApi();
         $this->filterRouteList();
+        $this->routeListHTML = $this->getRouteList(); // this also counts averages
+
 
     	if (empty($this->resultArray))
     	{
@@ -163,14 +172,6 @@ class talvilinnut
         $end = microtime(TRUE);
         $time = $end - $this->start;
         return round($time, 3);
-    }
-
-    public function getCiting()
-    {
-        return "<p id=\"talvilintutulokset-cite\">
-        <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</span>
-        <span class=\"service\">Powered by <a href=\"https://github.com/mikkohei13/talvilintutulokset\">talvilintutulokset</a></span>
-        </p>";
     }
 
     public function getExecutionStats()
@@ -381,6 +382,9 @@ class talvilinnut
     {
         require "names.php";
 
+        // Remove dots
+        $from = str_replace(".", "", $from);
+
         // abbreviations ans scientific names
         if (isset($fullNames[$from]))
         {
@@ -420,32 +424,41 @@ class talvilinnut
         return $array2;
     } 
 
+    public function getCitingHTML()
+    {
+        return $this->citingHTML;
+    }
+
 }
 
 $talvilinnut = new talvilinnut();
 
 
+// Stats...
 if (isset($_GET['stats']))
 {
+
     $talvilinnut->getEveryRouteData();
     $talvilinnut->countEveryRouteStats();
-    $talvilinnut->getRouteList(); // this also counts averages
 
+    // ...as JSON
     if (isset($_GET['json']))
     {
         echo $talvilinnut->getStatsJSON();
     }
+    // ...as HTML
     else
     {
         $talvilinnut->echoStatsGraph();
-        echo $talvilinnut->getCiting();
+        echo $talvilinnut->getCitingHTML();
         echo $talvilinnut->getExecutionStats();
     }
-} 
+}
+// Area or whole Finland
 else
 {
-    echo $talvilinnut->getRouteList(); // this also counts averages
-    echo $talvilinnut->getCiting();
+    echo $talvilinnut->routeListHTML;
+    echo $talvilinnut->getCitingHTML();
     echo $talvilinnut->getExecutionStats();
 }
 
