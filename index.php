@@ -129,25 +129,6 @@ class talvilinnut
 		return $date2;
 	}
 
-    public function getRouteTable()
-    {
-    	$html = "<table id=\"talvilinnut-table\">";
-    	foreach ($this->resultArray as $itemNumber => $routeData)
-    	{
-    		$html .= "
-    		<tr>
-    		<td class=\"municipality\"><a href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">" . $routeData['municipality'] . "</a></td>
-    		<td class=\"team\">" . $routeData['team'] . "</td>
-    		<td class=\"date\">" . $this->formatDate($routeData['date']) . "</td>
-    		<td class=\"speciesCount\">" . $routeData['speciesCount'] . " <span>lajia</span></td>
-    		<td class=\"individualCount\">" . $routeData['individualCount'] . " <span>yksilöä</span></td>
-    		</tr>
-    		";
-    	}
-    	$html .= "</table>";
-    	return $html;
-	}
-
     public function getRouteList()
     {
         $routeCount = 0;
