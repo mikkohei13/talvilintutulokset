@@ -507,7 +507,7 @@ $fullNames['Embsch'] = "Pajusirkku";
 $fullNames['Phyhum'] = "Kashmirinuunilintu";
 
 // Common sp's
-$fullNames['Loxia sp.'] = "Käpylintulaji";
+$fullNames['Loxia sp'] = "Käpylintulaji";
 $fullNames['Colsp'] = "Kyyhkylaji";
 $fullNames['Col sp'] = "Kyyhkylaji";
 $fullNames['Buteosp'] = "Hiirihaukkalaji";

@@ -183,12 +183,12 @@ class talvilinnut
     {
         foreach ($this->routeArray as $itemNumber => $routeData)
         {
-            $this->getSingleRouteData($routeData);
+            $this->fetchSingleRouteDataFromCacheOrApi($routeData);
         }
 //        echo "s";
     }
 
-    public function getSingleRouteData($routeData)
+    public function fetchSingleRouteDataFromCacheOrApi($routeData)
     {
         $DocumentID = $routeData['documentID'];
         $filename = "cache/documentID_" . $DocumentID . ".xml";
@@ -295,11 +295,6 @@ class talvilinnut
         // Saves stats
         $this->totalLengthMeters = $totalLengthMeters;
         $this->totalRoutesCount = $i;
-    }
-
-    public function getSingleRouteStats()
-    {
-
     }
 
     public function echoStatsGraph()
@@ -429,7 +424,45 @@ class talvilinnut
         return $this->citingHTML;
     }
 
+    public function getSingleRouteHTML()
+    {
+        $documentID = (int) $_GET['document_id'];
+        $area = (int) $_GET['area'];
+
+        // TODO: what if area is not set?
+
+        echo $documentID;
+        $options['documentID'] = $documentID;
+        $this->fetchSingleRouteDataFromCacheOrApi($options);
+        $this->countEveryRouteStats();
+
+//        var_dump(get_object_vars($this)); // debug
+
+        // TODO: real data!
+        // file_get_contents(http://127.0.0.1:4567/tests/talvilintutulokset/?area=3&stats&json): failed to open stream: Connection refuse
+//        $json = file_get_contents("http://" . $_SERVER['HTTP_HOST'] . $this->basePath . "?area=" . $area . "&stats&json");
+        $json = file_get_contents("cache/test.json");
+
+        $areaStats = json_decode($json, TRUE);
+
+        print_r ($this->speciesCounts);
+        print_r ($areaStats);
+
+        foreach ($this->speciesCounts as $species => $count)
+        {
+            echo "\n
+                $species
+                $count yksilöä
+                " . round(($count / ($this->totalLengthMeters / 10000)), 1) . " yksilöä / 10 km
+                keskimäärin
+                " . round(($areaStats['speciesCounts'][$species] / ($areaStats['totalLengthMeters'] / 10000)), 1) . " yksilöä / 10 km
+            ";
+        }
+    }
+
 }
+
+// -------------------------------------------------------------------------
 
 $talvilinnut = new talvilinnut();
 
@@ -453,6 +486,11 @@ if (isset($_GET['stats']))
         echo $talvilinnut->getCitingHTML();
         echo $talvilinnut->getExecutionStats();
     }
+}
+// Single route stats compared to multiple routes stats
+elseif (isset($_GET['document_id']))
+{
+    echo $talvilinnut->getSingleRouteHTML();
 }
 // Stats for area or whole Finland, returned as HTML
 else
