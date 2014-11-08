@@ -13,6 +13,7 @@ class talvilinnut
     public $routesXMLarray = Array();
     public $speciesCounts = Array();
     public $totalLengthMeters = FALSE;
+    public $totalRoutesCount = FALSE;
 
     public function __construct()
     {
@@ -186,33 +187,39 @@ class talvilinnut
     {
         foreach ($this->resultArray as $itemNumber => $routeData)
         {
-            $DocumentID = $routeData['documentID'];
-            $filename = "cache/documentID_" . $DocumentID . ".xml";
-
-            if ($this->fileIsOld($filename, 24))
-            {
-                $xml = simplexml_load_file("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
-                $this->routesXMLarray[$DocumentID] = $xml;
-
-                // Save to cache
-                $xml->asXml($filename);
-//                file_put_contents($filename, $xml);
-//                echo "<p>from Hatikka\n";
-            }
-            else
-            {
-                // Get data from cache
-                $xml = simplexml_load_file($filename);
-                $this->routesXMLarray[$DocumentID] = $xml;
-//                echo "<p>from Cache\n";
-            }
+            $this->getSingleRouteData($routeData);
         }
 //        echo "s";
+    }
+
+    public function getSingleRouteData($routeData)
+    {
+        $DocumentID = $routeData['documentID'];
+        $filename = "cache/documentID_" . $DocumentID . ".xml";
+
+        if ($this->fileIsOld($filename, 24))
+        {
+            $xml = simplexml_load_file("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
+            $this->routesXMLarray[$DocumentID] = $xml;
+
+            // Save to cache
+            $xml->asXml($filename);
+//                file_put_contents($filename, $xml);
+//                echo "<p>from Hatikka\n";
+        }
+        else
+        {
+            // Get data from cache
+            $xml = simplexml_load_file($filename);
+            $this->routesXMLarray[$DocumentID] = $xml;
+//                echo "<p>from Cache\n";
+        }
     }
 
     public function getStatsJSON()
     {
         $array['speciesCounts'] = $this->speciesCounts;
+        $array['totalRoutesCount'] = $this->totalRoutesCount;
         $array['totalLengthMeters'] = $this->totalLengthMeters;
 
         return json_encode($array);
@@ -222,6 +229,7 @@ class talvilinnut
     {
         $species = "";
         $count = 0;
+        $i = 0;
         $totalLengthMeters = 0;       
 
         // Goes through all routes
@@ -277,6 +285,7 @@ class talvilinnut
 
                 }
             }
+            $i++;
         }
 
         arsort($this->speciesCounts);
@@ -284,6 +293,7 @@ class talvilinnut
 //        print_r(@$this->speciesCounts);
 
         $this->totalLengthMeters = $totalLengthMeters;
+        $this->totalRoutesCount = $i;
     }
 
     public function echoStatsGraph()
@@ -357,7 +367,7 @@ class talvilinnut
         <div id=\"stats-list\">
         <p>$list</p>
         </div>
-        <p id=\"stats-length\">Reittien pituus yhteensä <span>" . round(($this->totalLengthMeters / 1000), 1) . "</span> km</p>
+        <p id=\"stats-length\">" . $this->totalRoutesCount . " reittiä, joiden yhteispituus on <span>" . round(($this->totalLengthMeters / 1000), 1) . "</span> km (" . round(($this->totalLengthMeters / 1000 / $this->totalRoutesCount), 1) . " km / reitti)</p>
         ";
     }
 
@@ -424,6 +434,10 @@ if (isset($_GET['stats']))
         echo $talvilinnut->getCiting();
         echo $talvilinnut->getExecutionStats();
     }
+}
+elseif (isset($_GET['documentID']))
+{
+
 }
 else
 {
