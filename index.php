@@ -4,7 +4,7 @@ header('Content-Type: text/html; charset=utf-8');
 class talvilinnut
 {
     public $basePath = "";
-	public $resultArray = Array();
+	public $routeArray = Array();
 	public $url = "";
 	public $area = "";
     public $source = "";
@@ -32,12 +32,12 @@ class talvilinnut
 
         // Gets fresh list of routes
         $this->createRouteListApiURL();
-        $this->fetchDataFromCacheOrApi();
-        $this->filterRouteList();
+        $this->fetchRoutesFromCacheOrApi();
+        $this->filterRouteArray();
         $this->routeListHTML = $this->getRouteList(); // this also counts averages
 
 
-    	if (empty($this->resultArray))
+    	if (empty($this->routeArray))
     	{
     		exit("Tältä ajalta ei ole vielä laskentoja.");
     	}
@@ -66,7 +66,7 @@ class talvilinnut
         $this->url = "http://koivu.luomus.fi/talvilinnut/census.php?year=$year&census=$census&json";
     }
 
-    public function fetchDataFromCacheOrApi()
+    public function fetchRoutesFromCacheOrApi()
     {
 		//echo $this->url;
 
@@ -75,7 +75,7 @@ class talvilinnut
 		if ($this->fileIsOld($filename))
 		{
 			$json = file_get_contents($this->url);
-			$this->resultArray = json_decode($json, TRUE);
+			$this->routeArray = json_decode($json, TRUE);
             $this->source = $this->url;
 
 			// Save to cache
@@ -85,7 +85,7 @@ class talvilinnut
 		{
 			// Get data from cache
 			$json = file_get_contents($filename);
-			$this->resultArray = json_decode($json, TRUE);
+			$this->routeArray = json_decode($json, TRUE);
             $this->source = $filename;
 		}
     }
@@ -103,33 +103,33 @@ class talvilinnut
     	}
     }
 
-    public function filterRouteList()
+    public function filterRouteArray()
     {
         if (isset($_GET["area"]))
         {
             $areaDirty = $_GET["area"];
-        	foreach ($this->resultArray as $itemNumber => $routeData)
+        	foreach ($this->routeArray as $itemNumber => $routeData)
         	{
         		if ($areaDirty != $routeData['areaID'])
         		{
-        			unset($this->resultArray[$itemNumber]);
+        			unset($this->routeArray[$itemNumber]);
         		}
         	}
         }
 
         // Sort by date desc
-        usort($this->resultArray, function($a, $b) {
+        usort($this->routeArray, function($a, $b) {
             return $b['date'] - $a['date'];
         });
 
-//        print_r ($this->resultArray);
+//        print_r ($this->routeArray);
 
 	}
 
     public function debug()
     {
     	echo "<pre>";
-    	print_r($this->resultArray);
+    	print_r($this->routeArray);
 	}
 
 	public function formatDate($date)
@@ -145,7 +145,7 @@ class talvilinnut
         $speciesAverageHelper = 0;
 
     	$html = "<h4>" . $this->title . ":</h4>";
-    	foreach ($this->resultArray as $itemNumber => $routeData)
+    	foreach ($this->routeArray as $itemNumber => $routeData)
     	{
     		$html .= "
     		<p>
@@ -181,7 +181,7 @@ class talvilinnut
 
     public function getEveryRouteData()
     {
-        foreach ($this->resultArray as $itemNumber => $routeData)
+        foreach ($this->routeArray as $itemNumber => $routeData)
         {
             $this->getSingleRouteData($routeData);
         }
