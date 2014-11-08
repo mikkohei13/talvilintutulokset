@@ -15,6 +15,8 @@ class talvilinnut
     public $totalLengthMeters = FALSE;
     public $totalRoutesCount = FALSE;
     public $speciesOnRoutes = Array();
+    public $individualAverage = FALSE;
+    public $speciesAverage = FALSE;
 
     public function __construct()
     {
@@ -148,6 +150,10 @@ class talvilinnut
 
     public function getRouteList()
     {
+        $routeCount = 0;
+        $individualAverageHelper = 0;
+        $speciesAverageHelper = 0;
+
     	$html = "<h4>" . $this->title . ":</h4>";
     	foreach ($this->resultArray as $itemNumber => $routeData)
     	{
@@ -160,8 +166,14 @@ class talvilinnut
     		<span class=\"team\"><span>(</span>" . $routeData['team'] . "<span>)</span></span>
     		</p>\n
     		";
+            $routeCount++;
+            $individualAverageHelper = $individualAverageHelper + $routeData['individualCount'];
+            $speciesAverageHelper = $speciesAverageHelper + $routeData['speciesCount'];
     	}
-    	$html .= "";
+        $this->totalRoutesCount = $routeCount;
+        $this->individualAverage = $individualAverageHelper / $routeCount;
+        $this->speciesAverage = $speciesAverageHelper / $routeCount;
+
     	return $html;
 	}
 
@@ -221,8 +233,12 @@ class talvilinnut
     public function getStatsJSON()
     {
         $array['speciesCounts'] = $this->speciesCounts;
+        $array['speciesOnRoutes'] = $this->speciesOnRoutes;
+
         $array['totalRoutesCount'] = $this->totalRoutesCount;
         $array['totalLengthMeters'] = $this->totalLengthMeters;
+        $array['speciesAverage'] = $this->speciesAverage;
+        $array['individualAverage'] = $this->individualAverage;
 
         return json_encode($array);
     }
@@ -369,7 +385,14 @@ class talvilinnut
         <?php
         echo "
         <table id=\"stats-table\" class=\"sortable\">$list</table>
-        <p id=\"stats-length\">" . $this->totalRoutesCount . " reittiä, joiden yhteispituus on <span>" . round(($this->totalLengthMeters / 1000), 1) . "</span> km (" . round(($this->totalLengthMeters / 1000 / $this->totalRoutesCount), 1) . " km / reitti)</p>
+        <p id=\"stats-length\">"
+        . $this->totalRoutesCount . " reittiä, joiden yhteispituus on <span>"
+        . round(($this->totalLengthMeters / 1000), 1) . "</span> km ("
+        . round(($this->totalLengthMeters / 1000 / $this->totalRoutesCount), 1) . " km / reitti).
+        Reitillä keskimäärin "
+        . round($this->speciesAverage, 1) . " lajia ja "
+        . round($this->individualAverage, 0) . " yksilöä.
+        </p>
         ";
     }
 
@@ -425,6 +448,7 @@ if (isset($_GET['stats']))
 {
     $talvilinnut->getEveryRouteData();
     $talvilinnut->countEveryRouteStats();
+    $talvilinnut->getRouteList(); // this also counts averages
 
     if (isset($_GET['json']))
     {
@@ -437,13 +461,9 @@ if (isset($_GET['stats']))
         echo $talvilinnut->getExecutionStats();
     }
 } 
-elseif (isset($_GET['documentID']))
-{
-    $talvilinnut->getSingleRouteData();
-}
 else
 {
-    echo $talvilinnut->getRouteList();
+    echo $talvilinnut->getRouteList(); // this also counts averages
     echo $talvilinnut->getCiting();
     echo $talvilinnut->getExecutionStats();
 }
