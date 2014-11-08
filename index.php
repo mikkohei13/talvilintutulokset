@@ -209,6 +209,12 @@ class talvilinnut
 //        echo "s";
     }
 
+    public function getStatsJSON()
+    {
+        $json = json_encode($this->speciesCounts);
+        return $json;
+    }
+
     public function countStats()
     {
         $species = "";
@@ -375,11 +381,18 @@ $talvilinnut = new talvilinnut();
 if (isset($_GET['stats']))
 {
     $talvilinnut->getRouteFullData();
+    $talvilinnut->countStats();
 
-    echo $talvilinnut->countStats();
-    $talvilinnut->echoStatsGraph();
-    echo $talvilinnut->getCiting();
-    echo $talvilinnut->getExecutionStats();
+    if (isset($_GET['json']))
+    {
+        echo $talvilinnut->getStatsJSON();
+    }
+    else
+    {
+        $talvilinnut->echoStatsGraph();
+        echo $talvilinnut->getCiting();
+        echo $talvilinnut->getExecutionStats();
+    }
 }
 else
 {
