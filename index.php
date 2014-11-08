@@ -20,8 +20,8 @@ class talvilinnut
         $this->start = microtime(TRUE);
         $this->basePath = dirname($_SERVER['REQUEST_URI']) . "/";
 
-        $this->createURL();
-        $this->fetchData();
+        $this->createRouteListApiURL();
+        $this->fetchDataFromCacheOrApi();
         $this->filterData();
 
     	if (empty($this->resultArray))
@@ -30,7 +30,7 @@ class talvilinnut
     	}
     }
 
-    public function createURL()
+    public function createRouteListApiURL()
     {
         $year = date("Y");
         $monthDay = ltrim(date("md"), 0);
@@ -53,7 +53,7 @@ class talvilinnut
         $this->url = "http://koivu.luomus.fi/talvilinnut/census.php?year=$year&census=$census&json";
     }
 
-    public function fetchData()
+    public function fetchDataFromCacheOrApi()
     {
 		//echo $this->url;
 
@@ -183,7 +183,7 @@ class talvilinnut
         return "<p id=\"talvilintutulokset-debug\" style=\"display: none;\">source " . $this->source . ", time " . $this->getExcecutionTime() . " s</p>";
     }
 
-    public function getRouteFullData()
+    public function getEveryRouteData()
     {
         foreach ($this->resultArray as $itemNumber => $routeData)
         {
@@ -421,7 +421,7 @@ $talvilinnut = new talvilinnut();
 
 if (isset($_GET['stats']))
 {
-    $talvilinnut->getRouteFullData();
+    $talvilinnut->getEveryRouteData();
     $talvilinnut->countStats();
 
     if (isset($_GET['json']))
@@ -437,7 +437,7 @@ if (isset($_GET['stats']))
 }
 elseif (isset($_GET['documentID']))
 {
-
+    $talvilinnut->getSingleRouteData();
 }
 else
 {
