@@ -226,12 +226,16 @@ class talvilinnut
         return json_encode($array);
     }
 
-    public function countStats()
+    /*
+    Uses data in global variable $this->routesXMLarray to calculate statistics for route(s).
+    Saves data into global variables.
+    */
+    public function countEveryRouteStats()
     {
         $species = "";
         $count = 0;
         $i = 0;
-        $totalLengthMeters = 0;       
+        $totalLengthMeters = 0;
 
         // Goes through all routes
         foreach ($this->routesXMLarray as $routeXML)
@@ -295,6 +299,11 @@ class talvilinnut
 
         $this->totalLengthMeters = $totalLengthMeters;
         $this->totalRoutesCount = $i;
+    }
+
+    public function getSingleRouteStats()
+    {
+
     }
 
     public function echoStatsGraph()
@@ -423,7 +432,7 @@ $talvilinnut = new talvilinnut();
 if (isset($_GET['stats']))
 {
     $talvilinnut->getEveryRouteData();
-    $talvilinnut->countStats();
+    $talvilinnut->countEveryRouteStats();
 
     if (isset($_GET['json']))
     {
