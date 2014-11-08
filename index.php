@@ -20,9 +20,10 @@ class talvilinnut
         $this->start = microtime(TRUE);
         $this->basePath = dirname($_SERVER['REQUEST_URI']) . "/";
 
+        // Gets fresh list of routes
         $this->createRouteListApiURL();
         $this->fetchDataFromCacheOrApi();
-        $this->filterData();
+        $this->filterRouteList();
 
     	if (empty($this->resultArray))
     	{
@@ -90,7 +91,7 @@ class talvilinnut
     	}
     }
 
-    public function filterData()
+    public function filterRouteList()
     {
         if (isset($_GET["area"]))
         {
