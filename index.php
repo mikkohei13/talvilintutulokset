@@ -461,6 +461,9 @@ class talvilinnut
             </style>
         ";
 
+
+        $i = 0;
+        $c = 0;
         foreach ($this->speciesCounts as $species => $count)
         {
             $localAverage = round(($count / ($this->totalLengthMeters / 10000)), 1);
@@ -481,7 +484,22 @@ class talvilinnut
                 " . $localAverage . " yksilöä / 10 km</span>. 
                 (ka. " . $areaAverage . " yksilöä / 10 km)
             ";
+
+            $i++;
+            $c = $c + $count;
         }
+
+        // TODO: check why average stats are incorrect
+        echo "<p>
+        Reitin pituus: " . ($this->totalLengthMeters / 1000) . " km <br />
+        Lajeja: " . $this->speciesAverage . " <br />
+        Yksilöitä: " . $this->individualAverage . " <br />
+        </p>";
+
+        echo "<p>
+        Lajeja: " . $i . " <br />
+        Yksilöitä: " . $c . " <br />
+        </p>";
     }
 
 }
