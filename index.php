@@ -313,30 +313,9 @@ class talvilinnut
 
         echo "<h4>Kokonaisyksilömäärät</h4>
             <style>
-            #stats-list p
+            #stats-table span
             {
-                -webkit-columns: 20em 2;
-                -moz-columns: 20em 2;
-                columns: 20em 2;
-            }
-            #stats-list .number
-            {
-                display: inline-block;
-                width: 2em;
-            }
-            #stats-list em
-            {
-                display: inline-block;
-                width: 10em;
-            }
-            #stats-list .count
-            {
-                display: inline-block;
-                width: 4em;
-            }
-            #stats-list .count10km span
-            {
-                color: #999;
+                color: #aaa;
             }
             </style>
         ";
@@ -361,17 +340,23 @@ class talvilinnut
             },
             ";
             $list .= "
-            <span>
-                <span class=\"number\">$i.</span>
-                <em>$species</em>
-                <span class=\"count\">$count</span>
-                <span class=\"count10km\">". round(($count / $totalLength10kms), 1) . " 
+            <tr>
+                <td class=\"number\">$i.</td>
+                <td class=\"species\"><em>$species</em></td>
+                <td class=\"count\">$count
+                    <span>yksilöä</span>
+                </td>
+                <td class=\"count10km\">". round(($count / $totalLength10kms), 1) . " 
                     <span>/ 10 km</span>
-                </span>
-                " . $this->speciesOnRoutes[$species] . " reitillä = 
-                " . round(($this->speciesOnRoutes[$species] / $this->totalRoutesCount * 100), 1) . " % reiteistä
-            </span>
-            <br />";
+                </td>
+                <td class=\"routes\">" . $this->speciesOnRoutes[$species] . "
+                    <span>reitillä</span>
+                </td> 
+                <td class=\"routes100\">" . round(($this->speciesOnRoutes[$species] / $this->totalRoutesCount * 100), 1) . "
+                    <span>%</span>
+                </td>
+            </tr>
+            ";
             $i++;
         }
         ?>
@@ -383,9 +368,7 @@ class talvilinnut
         </script>
         <?php
         echo "
-        <div id=\"stats-list\">
-        <p>$list</p>
-        </div>
+        <table id=\"stats-table\" class=\"sortable\">$list</table>
         <p id=\"stats-length\">" . $this->totalRoutesCount . " reittiä, joiden yhteispituus on <span>" . round(($this->totalLengthMeters / 1000), 1) . "</span> km (" . round(($this->totalLengthMeters / 1000 / $this->totalRoutesCount), 1) . " km / reitti)</p>
         ";
     }
