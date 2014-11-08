@@ -434,19 +434,19 @@ class talvilinnut
 $talvilinnut = new talvilinnut();
 
 
-// Stats...
+// Stats for multiple routes
 if (isset($_GET['stats']))
 {
-
+    // Count stats
     $talvilinnut->getEveryRouteData();
     $talvilinnut->countEveryRouteStats();
 
-    // ...as JSON
+    // Return as JSON
     if (isset($_GET['json']))
     {
         echo $talvilinnut->getStatsJSON();
     }
-    // ...as HTML
+    // Return as HTML
     else
     {
         $talvilinnut->echoStatsGraph();
@@ -454,7 +454,7 @@ if (isset($_GET['stats']))
         echo $talvilinnut->getExecutionStats();
     }
 }
-// Area or whole Finland
+// Stats for area or whole Finland, returned as HTML
 else
 {
     echo $talvilinnut->routeListHTML;
