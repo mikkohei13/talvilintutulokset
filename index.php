@@ -14,6 +14,7 @@ class talvilinnut
     public $speciesCounts = Array();
     public $totalLengthMeters = FALSE;
     public $totalRoutesCount = FALSE;
+    public $speciesOnRoutes = Array();
 
     public function __construct()
     {
@@ -227,7 +228,7 @@ class talvilinnut
     }
 
     /*
-    Uses data in global variable $this->routesXMLarray to calculate statistics for route(s).
+    Uses data in global variable $this->routesXMLarray in FMNH2008-XML-format to calculate statistics for route(s).
     Saves data into global variables.
     */
     public function countEveryRouteStats()
@@ -240,63 +241,60 @@ class talvilinnut
         // Goes through all routes
         foreach ($this->routesXMLarray as $routeXML)
         {
-
             $dataset = $routeXML->DataSet;
-//            print_r ($dataset);
 
+            // Finds and saves route length
             foreach ($dataset->Gathering->SiteMeasurementsOrFacts->SiteMeasurementOrFact as $siteFact)
             {
-//                print_r ($siteFact);
-//                echo "-----------------------------\n";
                 if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
                 {
                     $totalLengthMeters = $totalLengthMeters + $siteFact->MeasurementOrFactAtomised->LowerValue;
                 }
             }
 
+            // Finds and saves route length
             foreach ($dataset->Units as $unit)
             {
-//                $dataset = $routeXML->DataSet;
-
+                // Basic and extra species from different units
                 foreach ($unit as $species)
                 {
                     $measurement = $species->MeasurementsOrFacts->MeasurementOrFact;
                     $sp = "";
                     $count = "";
 
+                    // Species' information
                     foreach ($measurement as $key => $atomized)
                     {
-//                        print_r($atomized);
-//                        echo "\n--atomized END--\n";
+                        // Species name
                         if ($atomized->MeasurementOrFactAtomised->Parameter == "InformalNameString")
                         {
-//                            echo "HIT parameter: ". $atomized->MeasurementOrFactAtomised->Parameter . " \n";
+                            // Harmonizes casing
                             $sp = ucfirst(strtolower((string) $atomized->MeasurementOrFactAtomised->LowerValue));
                         }
+                        // Individual count
                         elseif ($atomized->MeasurementOrFactAtomised->Parameter == "Yksilömäärä")
                         {
                             $count = (int) $atomized->MeasurementOrFactAtomised->LowerValue;
                         }
-                        
-
                     }
 
-                    // Sum
-//                    echo "RESULT: " . $sp . ": " . $count . " <br />\n";
+                    // Finally saves sums to a varibale
                     @$this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $count;
-
-//                    $speciesSimple = $species->MeasurementsOrFacts->MeasurementOrFact;
-
-
+                    @$this->speciesOnRoutes[$sp] = $this->speciesOnRoutes[$sp] + 1;
                 }
             }
+            // Route count
             $i++;
         }
 
+        // Sorting
         arsort($this->speciesCounts);
-        $this->speciesCounts = $this->convertNames($this->speciesCounts);
-//        print_r(@$this->speciesCounts);
 
+        // Harmonizing names
+        $this->speciesCounts = $this->convertNames($this->speciesCounts);
+        $this->speciesOnRoutes = $this->convertNames($this->speciesOnRoutes);
+
+        // Saves stats
         $this->totalLengthMeters = $totalLengthMeters;
         $this->totalRoutesCount = $i;
     }
@@ -362,7 +360,18 @@ class talvilinnut
                 highlight: \"#d5f16d\" 
             },
             ";
-            $list .= "<span><span class=\"number\">$i.</span> <em>$species</em> <span class=\"count\">$count</span> <span class=\"count10km\">". round(($count / $totalLength10kms), 1) . " <span>/ 10 km</span></span></span><br />";
+            $list .= "
+            <span>
+                <span class=\"number\">$i.</span>
+                <em>$species</em>
+                <span class=\"count\">$count</span>
+                <span class=\"count10km\">". round(($count / $totalLength10kms), 1) . " 
+                    <span>/ 10 km</span>
+                </span>
+                " . $this->speciesOnRoutes[$species] . " reitillä = 
+                " . round(($this->speciesOnRoutes[$species] / $this->totalRoutesCount * 100), 1) . " % reiteistä
+            </span>
+            <br />";
             $i++;
         }
         ?>
@@ -444,7 +453,7 @@ if (isset($_GET['stats']))
         echo $talvilinnut->getCiting();
         echo $talvilinnut->getExecutionStats();
     }
-}
+} 
 elseif (isset($_GET['documentID']))
 {
     $talvilinnut->getSingleRouteData();
