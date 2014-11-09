@@ -152,7 +152,7 @@ class talvilinnut
     		<span class=\"date\">" . $this->formatDate($routeData['date']) . "</span>
     		<span class=\"locality\"><a title=\"Lisätietoja Hatikassa\" href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">" . trim($routeData['municipality']) . ", " . trim($routeData['grid']) .  "</a>:</span>
     		<span class=\"speciesCount\">" . $routeData['speciesCount'] . " lajia,</span>
-    		<span class=\"individualCount\">" . $routeData['individualCount'] . " yksilöä</span>
+    		<span class=\"individualCount\">" . $routeData['individualCount'] . " yksilöä</span> 
     		<span class=\"team\"><span>(</span>" . $routeData['team'] . "<span>)</span></span>
     		</p>\n
     		";
@@ -334,19 +334,19 @@ class talvilinnut
             ";
             $list .= "
             <tr>
-                <td class=\"number\">$i.</td>
-                <td class=\"species\"><em>$species</em></td>
-                <td class=\"count\">$count
-                    <span>yksilöä</span>
+                <td class=\"number\">$i.</td> 
+                <td class=\"species\"><em>$species</em></td> 
+                <td class=\"count\">$count 
+                    <span>yksilöä</span> 
                 </td>
                 <td class=\"count10km\">". round(($count / $totalLength10kms), 1) . " 
-                    <span>/ 10 km</span>
+                    <span>/ 10 km</span> 
                 </td>
                 <td class=\"routes\">" . $this->speciesOnRoutes[$species] . "
-                    <span>reitillä</span>
+                    <span>reitillä</span> 
                 </td> 
                 <td class=\"routes100\">" . round(($this->speciesOnRoutes[$species] / $this->totalRoutesCount * 100), 1) . "
-                    <span>%</span>
+                    <span>%</span> 
                 </td>
             </tr>
             ";
