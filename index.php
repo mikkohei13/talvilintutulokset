@@ -468,6 +468,7 @@ class talvilinnut
         {
             $localAverage = round(($count / ($this->totalLengthMeters / 10000)), 1);
             $areaAverage = round(($areaStats['speciesCounts'][$species] / ($areaStats['totalLengthMeters'] / 10000)), 1);
+
             if ($localAverage < $areaAverage)
             {
                 $class = "neg";
