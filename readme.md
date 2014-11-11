@@ -8,8 +8,8 @@ Hakee datan Luomuksen verkkopalvelusta:
 ## Käyttö:
 * Kaikki reitit: http://tringa.fi/tools/talvilintutulokset/
 * Kaikki tilastot: http://tringa.fi/tools/talvilintutulokset/?stats (HIDAS!)
-* Vain alueen 21 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=3
-* Vain alueen 21 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=3&stats
+* Vain alueen 21 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=21
+* Vain alueen 21 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=21&stats
 
 Aluekoodit voi katsoa rajapinnasta: http://koivu.luomus.fi/talvilinnut/census.php?year=2014&census=1&json
 
