@@ -147,10 +147,15 @@ class talvilinnut
     	$html = "<h4>" . $this->title . ":</h4>";
     	foreach ($this->routeArray as $itemNumber => $routeData)
     	{
+            // Multibyte ucfirst municipality name
+            $muni = trim($routeData['municipality']);
+            $muni = mb_strtolower($muni);
+            $muni = mb_strtoupper(mb_substr($muni, 0, 1)) . mb_substr($muni, 1);
+
     		$html .= "
     		<p>
     		<span class=\"date\">" . $this->formatDate($routeData['date']) . "</span>
-    		<span class=\"locality\"><a title=\"Lisätietoja Hatikassa\" href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">" . trim($routeData['municipality']) . ", " . trim($routeData['grid']) .  "</a>:</span>
+    		<span class=\"locality\"><a title=\"Lisätietoja Hatikassa\" href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">" . $muni . ", " . trim($routeData['grid']) .  "</a>:</span>
     		<span class=\"speciesCount\">" . $routeData['speciesCount'] . " lajia,</span>
     		<span class=\"individualCount\">" . $routeData['individualCount'] . " yksilöä</span> 
     		<span class=\"team\"><span>(</span>" . $routeData['team'] . "<span>)</span></span>
