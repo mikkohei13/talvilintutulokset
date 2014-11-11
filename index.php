@@ -147,9 +147,10 @@ class talvilinnut
     	foreach ($this->routeArray as $itemNumber => $routeData)
     	{
             // Multibyte ucfirst municipality name
+
             $muni = trim($routeData['municipality']);
-            $muni = mb_strtolower($muni);
-            $muni = mb_strtoupper(mb_substr($muni, 0, 1)) . mb_substr($muni, 1);
+            $muni = mb_strtolower($muni, 'UTF-8');
+            $muni = mb_strtoupper(mb_substr($muni, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($muni, 1, NULL, 'UTF-8');
 
     		$html .= "
     		<p>
