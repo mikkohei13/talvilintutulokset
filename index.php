@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
 
 class talvilinnut
 {
@@ -525,11 +524,13 @@ if (isset($_GET['stats']))
     // Return as JSON
     if (isset($_GET['json']))
     {
+        header('Content-Type: application/json; charset=utf-8');
         echo $talvilinnut->getStatsJSON();
     }
     // Return as HTML
     else
     {
+        header('Content-Type: text/html; charset=utf-8');
         $talvilinnut->echoStatsGraph();
         echo $talvilinnut->getCitingHTML();
         echo $talvilinnut->getExecutionStats();
@@ -538,11 +539,13 @@ if (isset($_GET['stats']))
 // Single route stats compared to multiple routes stats
 elseif (isset($_GET['document_id']))
 {
+    header('Content-Type: text/html; charset=utf-8');
     echo $talvilinnut->getSingleRouteHTML();
 }
 // Stats for area or whole Finland, returned as HTML
 else
 {
+    header('Content-Type: text/html; charset=utf-8');
     echo $talvilinnut->routeListHTML;
     echo $talvilinnut->getCitingHTML();
     echo $talvilinnut->getExecutionStats();

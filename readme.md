@@ -7,8 +7,8 @@ Hakee datan Luomuksen verkkopalvelusta:
 
 ## Käyttö:
 * Kaikki reitit: http://tringa.fi/tools/talvilintutulokset/
-* Vain alueen 3 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=3
-* Vain alueen 3 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=3&stats
+* Vain alueen 21 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=3
+* Vain alueen 21 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=3&stats
 
 ### Tulokset saa sivuilla vaikka jQuerylla:
 
