@@ -11,14 +11,20 @@ Hakee datan Luomuksen verkkopalvelusta:
 * Vain alueen 21 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=3
 * Vain alueen 21 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=3&stats
 
+Aluekoodit voi katsoa rajapinnasta: http://koivu.luomus.fi/talvilinnut/census.php?year=2014&census=1&json
+
+
 ### Tulokset saa sivuille esim...
 
 jQuerylla:
 
-	jQuery.get( "http://tringa.fi/tools/talvilintutulokset/?area=3", function( data ) {
+	jQuery.get( "http://tringa.fi/tools/talvilintutulokset/?area=21", function( data ) {
 	  jQuery( "#talvilintulaskennat" ).html( data );
 	});
 
 iframella:
 
-	<iframe src="http://tringa.fi/tools/talvilintutulokset/?stats" style="width: 800px; height: 500px;"></iframe>
+	<iframe src="http://tringa.fi/tools/talvilintutulokset/?area=21" style="width: 800px; height: 500px;"></iframe>
+
+
+
