@@ -16,31 +16,31 @@ Lintuyhdistyksen aluekoodi annetaan sovellukselle area-paramterina. Jos area-par
 
 ### Aluekoodit:
 
-Turun Lintutieteellinen Yhdistys	11
-Porin Lintutieteellinen Yhdistys	12
-Rauman Seudun Lintuharrastajat	13
-Helsingin Seudun Lintutieteellinen Yhdistys - Tringa	21
-Keski- ja Pohjois-Uudenmaan Lintuharrastajat - Apus	22
-Porvoon Seudun Lintuyhdistys	23
-Lohjan Lintutieteellinen Yhdistys - Hakki	24
-Kymenlaakson Lintutieteellinen Yhdistys	31
-Etelä-Karjalan Lintutieteellinen Yhdistys	32
-Lounais-Hämeen Lintuharrastajat	41
-Kanta-Hämeen Lintutieteellinen Yhdistys	42
-Päijät-Hämeen Lintutieteellinen Yhdistys	43
-Pirkanmaan Lintutieteellinen Yhdistys
-Etelä-Savon Lintuharrastajat - Oriolus	51
-Pohjois-Savon Lintuyhdistys - Kuikka	54
-Pohjois-Karjalan Lintutieteellinen Yhdistys	57
-Keski-Suomen Lintutieteellinen Yhdistys	61
-Suomenselän Lintutieteellinen Yhdistys	71
-Suupohjan Lintutietieteellinen Yhdistys	72
-Keski-Pohjanmaan Lintutieteellinen Yhdistys	74
-Pohjois-Pohjanmaan Lintutieteellinen Yhdistys	81
-Kainuun Lintutieteellinen Yhdistys	82
-Kuusamon lintukerho	83
-Kemi-Tornion Lintuharrastajat - Xenus	91
-Lapin Lintutieteellinen Yhdistys	92
+	Turun Lintutieteellinen Yhdistys	11
+	Porin Lintutieteellinen Yhdistys	12
+	Rauman Seudun Lintuharrastajat	13
+	Helsingin Seudun Lintutieteellinen Yhdistys - Tringa	21
+	Keski- ja Pohjois-Uudenmaan Lintuharrastajat - Apus	22
+	Porvoon Seudun Lintuyhdistys	23
+	Lohjan Lintutieteellinen Yhdistys - Hakki	24
+	Kymenlaakson Lintutieteellinen Yhdistys	31
+	Etelä-Karjalan Lintutieteellinen Yhdistys	32
+	Lounais-Hämeen Lintuharrastajat	41
+	Kanta-Hämeen Lintutieteellinen Yhdistys	42
+	Päijät-Hämeen Lintutieteellinen Yhdistys	43
+	Pirkanmaan Lintutieteellinen Yhdistys
+	Etelä-Savon Lintuharrastajat - Oriolus	51
+	Pohjois-Savon Lintuyhdistys - Kuikka	54
+	Pohjois-Karjalan Lintutieteellinen Yhdistys	57
+	Keski-Suomen Lintutieteellinen Yhdistys	61
+	Suomenselän Lintutieteellinen Yhdistys	71
+	Suupohjan Lintutietieteellinen Yhdistys	72
+	Keski-Pohjanmaan Lintutieteellinen Yhdistys	74
+	Pohjois-Pohjanmaan Lintutieteellinen Yhdistys	81
+	Kainuun Lintutieteellinen Yhdistys	82
+	Kuusamon lintukerho	83
+	Kemi-Tornion Lintuharrastajat - Xenus	91
+	Lapin Lintutieteellinen Yhdistys	92
 
 ### Tulokset saa sivuille esim...
 
