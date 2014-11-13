@@ -198,7 +198,7 @@ class talvilinnut
         $DocumentID = $routeData['documentID'];
         $filename = "cache/documentID_" . $DocumentID . ".xml";
 
-        if ($this->fileIsOld($filename, 24))
+        if ($this->fileIsOld($filename, 168))
         {
             $xml = simplexml_load_file("http://hatikka.fi/?page=view&source=2&xsl=false&id=" . $DocumentID);
             $this->routesXMLarray[$DocumentID] = $xml;
