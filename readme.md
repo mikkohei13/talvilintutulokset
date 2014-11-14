@@ -7,7 +7,7 @@ Hakee datan Luomuksen verkkopalvelusta:
 
 ## Käyttö:
 
-Lintuyhdistyksen aluekoodi annetaan sovellukselle area-paramterina. Jos area-parametria ei anna, näyttää sovellus datan koko Suomen alueelta. Stasts-parametrin lisääminen näyttää laji- ja yksilömäärätilaston.
+Lintuyhdistyksen aluekoodi annetaan sovellukselle area-paramterina. Jos area-parametria ei anna, näyttää sovellus datan koko Suomen alueelta. Stats-parametrin lisääminen näyttää laji- ja yksilömäärätilaston.
 
 * Kaikki reitit: http://tringa.fi/tools/talvilintutulokset/
 * Kaikki tilastot: http://tringa.fi/tools/talvilintutulokset/?stats (HIDAS!)

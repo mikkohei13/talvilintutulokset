@@ -1,4 +1,6 @@
 <?php
+
+// official abbrs
 $fullNames['Gavia stellata'] = "Kaakkuri";
 $fullNames['Gavia arctica'] = "Kuikka";
 $fullNames['Tachybaptus ruficollis'] = "Pikku-uikku";
@@ -504,7 +506,11 @@ $fullNames['Embpus'] = "Pikkusirkku";
 $fullNames['Embaur'] = "Kultasirkku";
 $fullNames['Embsch'] = "Pajusirkku";
 
+// Inofficial abbrs
 $fullNames['Phyhum'] = "Kashmirinuunilintu";
+
+// Synonyms
+$fullNames['Mergus albellus'] = "Uivelo";
 
 // Common sp's
 $fullNames['Loxia sp'] = "Käpylintulaji";
