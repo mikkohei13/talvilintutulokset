@@ -76,6 +76,11 @@ class comparison
 
             echo "<p>$name</p>";
         }
+
+        echo "<p>totalRoutesCount</p>";
+        echo "<p>totalLengthMeters</p>";
+        echo "<p>speciesAverage</p>";
+        echo "<p>individualAverage</p>";
         echo "</div>";
 
         // Census results
@@ -94,15 +99,27 @@ class comparison
                     break;
                 }
 
+                if (isset($censusData['speciesCounts'][$name]))
+                {
+                    $count = $censusData['speciesCounts'][$name];
+                }
+                else
+                {
+                    $count = 0;
+                }
                 echo "<p>
-                $name " . @$censusData['speciesCounts'][$name] . "
-                </p>";
+                " . round(($count / ($censusData['totalLengthMeters'] / 10000)), 1) . "
+                &nbsp;</p>";
             }
+            echo "<p>" . $censusData['totalRoutesCount'] . "</p>";
+            echo "<p>" . round(($censusData['totalLengthMeters'] / 1000), 0) . " km &nbsp;</p>";
+            echo "<p>" . round($censusData['speciesAverage'], 0) . "</p>";
+            echo "<p>" . round($censusData['individualAverage'], 0) . "</p>";
             echo "</div>";
         }
 
         echo "<pre>";
-        print_r ($this->censusData);
+//        print_r ($this->censusData);
 
     }
 
