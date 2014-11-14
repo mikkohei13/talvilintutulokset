@@ -508,6 +508,7 @@ $fullNames['Embsch'] = "Pajusirkku";
 
 // Inofficial abbrs
 $fullNames['Phyhum'] = "Kashmirinuunilintu";
+$fullNames['Hydmin'] = "Pikkulokki";
 
 // Synonyms
 $fullNames['Mergus albellus'] = "Uivelo";
@@ -519,6 +520,7 @@ $fullNames['Col sp'] = "Kyyhkylaji";
 $fullNames['Buteosp'] = "Hiirihaukkalaji";
 $fullNames['Buteo sp'] = "Hiirihaukkalaji";
 $fullNames['Stercorarius sp'] = "Kihulaji";
+$fullNames['Cyg sp'] = "Joutsenlaji";
 $fullNames['Cygnus sp'] = "Joutsenlaji";
 $fullNames['Cygnussp'] = "Joutsenlaji";
 $fullNames['Larus sp'] = "Lokkilaji";

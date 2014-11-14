@@ -44,24 +44,56 @@ class talvilinnut
 
     public function createRouteListApiURL()
     {
-        $year = date("Y");
-        $monthDay = ltrim(date("md"), 0);
-
-        if ($monthDay >= 1101 && $monthDay <= 1224)
+        // Year
+        if (isset($_GET['year']))
         {
-            $census = 1;
+            $year = (int) $_GET['year'];
+        }
+        else
+        {
+            $year = date("Y");
+        }
+
+        // Census
+        if (isset($_GET['census']))
+        {
+            $census = (int) $_GET['census'];
+        }
+        else
+        {
+            $monthDay = ltrim(date("md"), 0);
+
+            if ($monthDay >= 1101 && $monthDay <= 1224)
+            {
+                $census = 1;
+                $this->title = "Syyslaskenta $year";
+            }
+            elseif ($monthDay >= 1225 || $monthDay <= 220)
+            {
+                $census = 2;
+                $this->title = "Talvilaskenta $year - " . ($year + 1);
+            }
+            else
+            {
+                $census = 3;
+                $this->title = "Kevätlaskenta $year";
+            }
+        }
+
+        // Title
+        if ($census == 1)
+        {
             $this->title = "Syyslaskenta $year";
         }
-        elseif ($monthDay >= 1225 || $monthDay <= 220)
+        elseif ($census == 2)
         {
-            $census = 2;
             $this->title = "Talvilaskenta $year - " . ($year + 1);
         }
         else
         {
-            $census = 3;
             $this->title = "Kevätlaskenta $year";
         }
+
         $this->url = "http://koivu.luomus.fi/talvilinnut/census.php?year=$year&census=$census&json";
     }
 
@@ -150,7 +182,7 @@ class talvilinnut
 
             $muni = trim($routeData['municipality']);
             $muni = mb_strtolower($muni, 'UTF-8');
-            $muni = mb_strtoupper(mb_substr($muni, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($muni, 1, NULL, 'UTF-8');
+            $muni = mb_strtoupper(mb_substr($muni, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($muni, 1, (strlen($muni) - 1), 'UTF-8');
 
     		$html .= "
     		<p>
