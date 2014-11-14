@@ -1,6 +1,6 @@
 <?php
 
-// official abbrs
+// Scientific names
 $fullNames['Gavia stellata'] = "Kaakkuri";
 $fullNames['Gavia arctica'] = "Kuikka";
 $fullNames['Tachybaptus ruficollis'] = "Pikku-uikku";
@@ -253,6 +253,8 @@ $fullNames['Emberiza rustica'] = "Pohjansirkku";
 $fullNames['Emberiza pusilla'] = "Pikkusirkku";
 $fullNames['Emberiza aureola'] = "Kultasirkku";
 $fullNames['Emberiza schoeniclus'] = "Pajusirkku";
+
+// Official abbrs
 $fullNames['Gavste'] = "Kaakkuri";
 $fullNames['Gavarc'] = "Kuikka";
 $fullNames['Tacruf'] = "Pikku-uikku";
@@ -509,6 +511,10 @@ $fullNames['Embsch'] = "Pajusirkku";
 // Inofficial abbrs
 $fullNames['Phyhum'] = "Kashmirinuunilintu";
 $fullNames['Hydmin'] = "Pikkulokki";
+
+// ------------------------------ BREAK ------------------------------
+$fullNames['break'] = "break";
+// ------------------------------ BREAK ------------------------------
 
 // Synonyms
 $fullNames['Mergus albellus'] = "Uivelo";
