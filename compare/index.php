@@ -1,0 +1,121 @@
+<?php
+
+class comparison
+{
+    public $start = "";
+    public $title = "";
+    public $citingHTML = "
+        <p id=\"talvilintutulokset-cite\">
+            <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</span>
+            <span class=\"service\">Powered by <a href=\"https://github.com/mikkohei13/talvilintutulokset\">talvilintutulokset</a></span>
+        </p>
+    ";
+    public $censusData = Array();
+
+    public function __construct()
+    {
+        $this->start = microtime(TRUE);
+
+        $censuses = $_GET['censuses'];
+        $censusesArray = explode(",", $censuses);
+
+        // TODO: data security
+        // TODO: area selection
+        // TODO: get JSON from subdirectory
+
+        foreach ($censusesArray as $censusKey => $censusID)
+        {
+            $censusIDparts = explode("-", $censusID);
+            $json = file_get_contents("http://tringa.fi/tools/talvilintutulokset-DEV/?area=21&stats&json&year=" . $censusIDparts[0] . "&census=" . $censusIDparts[1]);
+            $this->censusData[$censusID] = json_decode($json, TRUE);
+        }
+    }
+
+
+    public function getExcecutionTime()
+    {
+        $end = microtime(TRUE);
+        $time = $end - $this->start;
+        return round($time, 3);
+    }
+
+    public function getExecutionStats()
+    {
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">time " . $this->getExcecutionTime() . " s</p>";
+    }
+
+    public function echoComparisonGraph()
+    {
+        include "vernacular_names.php";
+
+        echo "
+            <style>
+            .census
+            {
+                float: left;
+            }
+            pre
+            {
+                clear: both;
+            }
+            </style>
+        ";
+
+        echo "<div class=\"census\">";
+        // Title
+        echo "<p>Laji</p>";
+
+        // Species
+        foreach ($vernNames as $abbr => $name)
+        {
+            // TODO: separate name list, without synonyms
+            if ("break" == $name)
+            {
+                break;
+            }
+
+            echo "<p>$name</p>";
+        }
+        echo "</div>";
+
+        // Census results
+        foreach ($this->censusData as $censusID => $censusData)
+        {
+            echo "<div class=\"census\">";
+            // Title
+            echo "<p>" . $censusID . "</p>";
+
+            // Species
+            foreach ($vernNames as $abbr => $name)
+            {
+                // TODO: separate name list, without synonyms
+                if ("break" == $name)
+                {
+                    break;
+                }
+
+                echo "<p>
+                $name " . @$censusData['speciesCounts'][$name] . "
+                </p>";
+            }
+            echo "</div>";
+        }
+
+        echo "<pre>";
+        print_r ($this->censusData);
+
+    }
+
+}
+
+// -------------------------------------------------------------------------
+
+$comparison = new comparison();
+
+header('Content-Type: text/html; charset=utf-8');
+$comparison->echoComparisonGraph();
+
+echo $comparison->getExecutionStats();
+
+
+?>
