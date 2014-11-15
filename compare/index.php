@@ -16,17 +16,18 @@ class comparison
     {
         $this->start = microtime(TRUE);
 
+        $area = (int) $_GET['area'];
+
         $censuses = $_GET['censuses'];
         $censusesArray = explode(",", $censuses);
 
         // TODO: data security
-        // TODO: area selection
         // TODO: get JSON from subdirectory
 
         foreach ($censusesArray as $censusKey => $censusID)
         {
             $censusIDparts = explode("-", $censusID);
-            $json = file_get_contents("http://tringa.fi/tools/talvilintutulokset-DEV/?area=21&stats&json&year=" . $censusIDparts[0] . "&census=" . $censusIDparts[1]);
+            $json = file_get_contents("http://tringa.fi/tools/talvilintutulokset-DEV/?area=$area&stats&json&year=" . $censusIDparts[0] . "&census=" . $censusIDparts[1]);
             $this->censusData[$censusID] = json_decode($json, TRUE);
         }
     }
@@ -58,6 +59,22 @@ class comparison
             {
                 clear: both;
             }
+            .average
+            {
+                font-weight: bold;
+            }
+            .highest
+            {
+                background-color: #cfc;
+            }
+            .higher-average
+            {
+                color: green;
+            }
+            .lower-average
+            {
+                color: red;
+            }
             </style>
         ";
 
@@ -67,32 +84,59 @@ class comparison
         {
             // Census results
             echo "<tr>";
-            echo "<td>$name</td>";
+            echo "<td>$name</td>\n";
             $c = 0;
             $averageBase = 0;
+            $temp = Array();
+            $highest = FALSE;
+            $highestIndex = 999;
 
             foreach ($this->censusData as $censusID => $censusData)
             {
                 if (isset($censusData['speciesCounts'][$name]))
                 {
                     $per10km = @$censusData['speciesCounts'][$name] / ($censusData['totalLengthMeters'] / 10000);
-                    echo "<td>" . round($per10km, 2) . "</td>";
+                    $temp[$c] = round($per10km, 2);
+                    if ($per10km >= $highest)
+                    {
+                        $highest = $per10km;
+                        $highestIndex = $c;
+                    }
                 }
                 else
                 {
                     $per10km = 0;
-                    echo "<td>&nbsp;</td>";
+                    $temp[$c] = "&nbsp;";
                 }
 
                 $averageBase = $averageBase + $per10km;
                 $c++;
             }
 
-            $average = round(($averageBase / $c), 1);
-            echo "<td>$average</td>";
-            echo "</tr>";
+            $average = round(($averageBase / $c), 2);
+
+            foreach ($temp as $cKey => $cValue)
+            {
+                $class = "";
+                if ($cKey == $highestIndex)
+                {
+                    $class .= "highest ";
+                }
+                if ($cValue > $average)
+                {
+                    $class .= "higher-average ";
+                }
+                elseif ($cValue < $average)
+                {
+                    $class .= "lower-average ";
+                }
+                echo "<td class=\"$class\">$cValue</td>\n";
+            }
+
+            echo "<td class=\"average\">$average</td>\n";
+            echo "</tr>\n\n";
         }
-        echo "</table>";
+        echo "</table>\n\n\n";
 /*
         echo "<div class=\"census\">";
         // Title
