@@ -79,7 +79,7 @@ class comparison
         ";
 
         echo "<table>";
-        // Species
+        // Goes through each species
         foreach ($vernNames as $abbr => $name)
         {
             // Census results
@@ -91,6 +91,7 @@ class comparison
             $highest = FALSE;
             $highestIndex = 999;
 
+            // Goes through each census, gets the species
             foreach ($this->censusData as $censusID => $censusData)
             {
                 if (isset($censusData['speciesCounts'][$name]))
@@ -113,8 +114,10 @@ class comparison
                 $c++;
             }
 
+            // Calculate average
             $average = round(($averageBase / $c), 2);
 
+            // Builds HTML-table row, cell by cell
             foreach ($temp as $cKey => $cValue)
             {
                 $class = "";
@@ -137,66 +140,8 @@ class comparison
             echo "</tr>\n\n";
         }
         echo "</table>\n\n\n";
-/*
-        echo "<div class=\"census\">";
-        // Title
-        echo "<p>Laji</p>";
 
-        // Species
-        foreach ($vernNames as $abbr => $name)
-        {
-            // TODO: separate name list, without synonyms
-            if ("break" == $name)
-            {
-                break;
-            }
-
-            echo "<p>$name</p>";
-        }
-
-        echo "<p>Reittien määrä</p>";
-        echo "<p>Reittien yhteispituus</p>";
-        echo "<p>Lajeja keskim.</p>";
-        echo "<p>Yksilöitä keskim.</p>";
-        echo "</div>";
-
-        // Census results
-        foreach ($this->censusData as $censusID => $censusData)
-        {
-            echo "<div class=\"census\">";
-            // Title
-            echo "<p>" . $censusID . "</p>";
-
-            // Species
-            foreach ($vernNames as $abbr => $name)
-            {
-                // TODO: separate name list, without synonyms
-                if ("break" == $name)
-                {
-                    break;
-                }
-
-                if (isset($censusData['speciesCounts'][$name]))
-                {
-                    $count = $censusData['speciesCounts'][$name];
-                }
-                else
-                {
-                    $count = 0;
-                }
-                echo "<p>
-                " . round(($count / ($censusData['totalLengthMeters'] / 10000)), 1) . "
-                &nbsp;</p>";
-            }
-            echo "<p>" . $censusData['totalRoutesCount'] . "</p>";
-            echo "<p>" . round(($censusData['totalLengthMeters'] / 1000), 0) . " km &nbsp;</p>";
-            echo "<p>" . round($censusData['speciesAverage'], 0) . "</p>";
-            echo "<p>" . round($censusData['individualAverage'], 0) . "</p>";
-            echo "</div>";
-        }
-*/
-        echo "<pre>";
-//        print_r ($this->censusData);
+//        echo "<pre>"; print_r ($this->censusData); // debug
 
     }
 
