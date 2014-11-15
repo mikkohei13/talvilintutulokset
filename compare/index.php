@@ -60,7 +60,7 @@ class comparison
             }
             </style>
         ";
-        $tempVernNames = $vernNames;
+
         echo "<table>";
         foreach ($vernNames as $abbr => $name)
         {
@@ -69,11 +69,15 @@ class comparison
             echo "<td>$name</td>";
             foreach ($this->censusData as $censusID => $censusData)
             {
-                echo "<td>" . @$censusData['speciesCounts'][$name] . "</td>";
-                /*
-                $tempName = array_shift($tempVernNames);
-                echo "<td>$tempName</td>";
-                */
+                if (isset($censusData['speciesCounts'][$name]))
+                {
+                    $per10km = round((@$censusData['speciesCounts'][$name] / ($censusData['totalLengthMeters'] / 10000)), 1);
+                }
+                else
+                {
+                    $per10km = "";
+                }
+                echo "<td>" . $per10km . "</td>";
             }
             echo "</tr>";
         }
