@@ -60,7 +60,25 @@ class comparison
             }
             </style>
         ";
-
+        $tempVernNames = $vernNames;
+        echo "<table>";
+        foreach ($vernNames as $abbr => $name)
+        {
+            // Census results
+            echo "<tr>";
+            echo "<td>$name</td>";
+            foreach ($this->censusData as $censusID => $censusData)
+            {
+                echo "<td>" . @$censusData['speciesCounts'][$name] . "</td>";
+                /*
+                $tempName = array_shift($tempVernNames);
+                echo "<td>$tempName</td>";
+                */
+            }
+            echo "</tr>";
+        }
+        echo "</table>";
+/*
         echo "<div class=\"census\">";
         // Title
         echo "<p>Laji</p>";
@@ -117,7 +135,7 @@ class comparison
             echo "<p>" . round($censusData['individualAverage'], 0) . "</p>";
             echo "</div>";
         }
-
+*/
         echo "<pre>";
 //        print_r ($this->censusData);
 
