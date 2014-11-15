@@ -61,7 +61,7 @@ class comparison
             }
             .average
             {
-                font-weight: bold;
+                background-color: #ffc;
             }
             .highest
             {
@@ -75,16 +75,50 @@ class comparison
             {
                 color: red;
             }
+
+
+            table
+            {
+                border-collapse: collapse;
+            }
+
+            td, th {
+                border: 1px solid #eee;
+                border-bottom: 1px solid #ddd;
+                text-align: right;
+                padding: 0.2em;
+            }
+            th
+            {
+                border-bottom: 3px solid #ddd;
+            }
+            .name
+            {
+                text-align: left;
+            }
             </style>
         ";
 
+        // Header row
+
         echo "<table>";
+        echo "<tr id=\"table-header\">";
+        echo "<th class=\"name\">Laji</th>";
+        foreach ($this->censusData as $censusID => $censusData)
+        {
+            echo "<th>$censusID</th>";
+        }
+        echo "<th class=\"average\">ka.</th>";
+        echo "</tr>";
+
         // Goes through each species
         foreach ($vernNames as $abbr => $name)
         {
             // Census results
             echo "<tr>";
-            echo "<td>$name</td>\n";
+            echo "<td class=\"name\">$name</td>\n";
+
+
             $c = 0;
             $averageBase = 0;
             $temp = Array();
@@ -94,6 +128,7 @@ class comparison
             // Goes through each census, gets the species
             foreach ($this->censusData as $censusID => $censusData)
             {
+
                 if (isset($censusData['speciesCounts'][$name]))
                 {
                     $per10km = @$censusData['speciesCounts'][$name] / ($censusData['totalLengthMeters'] / 10000);
