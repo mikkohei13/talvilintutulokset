@@ -17,25 +17,19 @@ class comparison
     public function __construct()
     {
         $this->start = microtime(TRUE);
+        $this->readCache();
 
-        // Read cache
-        $this->cacheFilename = "cache/" . md5($_SERVER['REQUEST_URI']);
-        if (! $this->fileIsOld($this->cacheFilename))
-        {
-            $cacheFile = file_get_contents($this->cacheFilename);
-            echo $cacheFile;
-            exit();
-        }
-
-
+        // Get and check vars
         $area = (int) $_GET['area'];
 
         $censuses = $_GET['censuses'];
+        if (preg_match('/^[0-9,\-]+$/i', $censuses) === 0)
+        {
+            exit("Virheellinen arvo census-muuttujassa; vain numeroita, tavuviivoja (-) ja pilkkuja (,)");
+        }
         $censusesArray = explode(",", $censuses);
 
-        // TODO: data security
-        // TODO: get JSON from subdirectory
-
+        // TODO: get JSON from subdirectory?
         foreach ($censusesArray as $censusKey => $censusID)
         {
             $censusIDparts = explode("-", $censusID);
@@ -44,7 +38,19 @@ class comparison
         }
     }
 
+    public function readCache()
+    {
+        $this->cacheFilename = "cache/" . md5($_SERVER['REQUEST_URI']);
+        if (! $this->fileIsOld($this->cacheFilename))
+        {
+            $cacheFile = file_get_contents($this->cacheFilename);
+            echo $cacheFile;
+            echo $this->getExecutionStats("cache");
+            exit("");
+        }
+    }
 
+    // TODO: move to utils?
     public function fileIsOld($filename, $hours = 1)
     {
         // @ because file might not exist
@@ -65,9 +71,9 @@ class comparison
         return round($time, 3);
     }
 
-    public function getExecutionStats()
+    public function getExecutionStats($source = "api")
     {
-        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">time " . $this->getExcecutionTime() . " s</p>";
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source: $source, time " . $this->getExcecutionTime() . " s</p>";
     }
 
     public function getStyles()
@@ -209,11 +215,16 @@ class comparison
         $html .= "</table>\n\n\n";
 
         // Write cache
-        file_put_contents($this->cacheFilename, $html);
+        $this->writeCache($html);
         return $html;
 
 //        echo "<pre>"; print_r ($this->censusData); // debug
 
+    }
+
+    public function writeCache($data)
+    {
+        file_put_contents($this->cacheFilename, $data);
     }
 
 }
