@@ -62,23 +62,34 @@ class comparison
         ";
 
         echo "<table>";
+        // Species
         foreach ($vernNames as $abbr => $name)
         {
             // Census results
             echo "<tr>";
             echo "<td>$name</td>";
+            $c = 0;
+            $averageBase = 0;
+
             foreach ($this->censusData as $censusID => $censusData)
             {
                 if (isset($censusData['speciesCounts'][$name]))
                 {
-                    $per10km = round((@$censusData['speciesCounts'][$name] / ($censusData['totalLengthMeters'] / 10000)), 1);
+                    $per10km = @$censusData['speciesCounts'][$name] / ($censusData['totalLengthMeters'] / 10000);
+                    echo "<td>" . round($per10km, 2) . "</td>";
                 }
                 else
                 {
-                    $per10km = "";
+                    $per10km = 0;
+                    echo "<td>&nbsp;</td>";
                 }
-                echo "<td>" . $per10km . "</td>";
+
+                $averageBase = $averageBase + $per10km;
+                $c++;
             }
+
+            $average = round(($averageBase / $c), 1);
+            echo "<td>$average</td>";
             echo "</tr>";
         }
         echo "</table>";
