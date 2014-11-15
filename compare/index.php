@@ -11,10 +11,22 @@ class comparison
         </p>
     ";
     public $censusData = Array();
+    public $cacheFilename;
+
 
     public function __construct()
     {
         $this->start = microtime(TRUE);
+
+        // Read cache
+        $this->cacheFilename = "cache/" . md5($_SERVER['REQUEST_URI']);
+        if (! $this->fileIsOld($this->cacheFilename))
+        {
+            $cacheFile = file_get_contents($this->cacheFilename);
+            echo $cacheFile;
+            exit();
+        }
+
 
         $area = (int) $_GET['area'];
 
@@ -33,6 +45,19 @@ class comparison
     }
 
 
+    public function fileIsOld($filename, $hours = 1)
+    {
+        // @ because file might not exist
+        if (time() - @filemtime($filename) > ($hours * 3600))
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
     public function getExcecutionTime()
     {
         $end = microtime(TRUE);
@@ -45,11 +70,9 @@ class comparison
         return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">time " . $this->getExcecutionTime() . " s</p>";
     }
 
-    public function echoComparisonGraph()
+    public function getStyles()
     {
-        include "vernacular_names.php";
-
-        echo "
+        $styles = "
             <style>
             .census
             {
@@ -76,47 +99,56 @@ class comparison
                 color: red;
             }
 
-
-            table
+            #talvilinnut-comparison-table
             {
                 border-collapse: collapse;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 93%;
             }
 
-            td, th {
+            #talvilinnut-comparison-table td, #talvilinnut-comparison-table th {
                 border: 1px solid #eee;
                 border-bottom: 1px solid #ddd;
                 text-align: right;
                 padding: 0.2em;
             }
-            th
+            #talvilinnut-comparison-table th
             {
                 border-bottom: 3px solid #ddd;
             }
-            .name
+            #talvilinnut-comparison-table .name
             {
                 text-align: left;
             }
             </style>
         ";
 
-        // Header row
+        return $styles;
+    }
 
-        echo "<table>";
-        echo "<tr id=\"table-header\">";
-        echo "<th class=\"name\">Laji</th>";
+    public function getComparisonTable()
+    {
+        include "vernacular_names.php";
+        $html = "";
+        $html .= $this->getStyles();
+
+        // Table start & header row
+        $html .= "<table id=\"talvilinnut-comparison-table\">";
+        $html .= "<tr class=\"table-header\">";
+        $html .= "<th class=\"name\">Laji</th>";
         foreach ($this->censusData as $censusID => $censusData)
         {
-            echo "<th>$censusID</th>";
+            $html .= "<th>$censusID</th>";
         }
-        echo "<th class=\"average\">ka.</th>";
-        echo "</tr>";
+        $html .= "<th class=\"average\">ka.</th>";
+        $html .= "</tr>";
 
         // Goes through each species
         foreach ($vernNames as $abbr => $name)
         {
             // Census results
-            echo "<tr>";
-            echo "<td class=\"name\">$name</td>\n";
+            $html .= "<tr>";
+            $html .= "<td class=\"name\">$name</td>\n";
 
 
             $c = 0;
@@ -168,13 +200,17 @@ class comparison
                 {
                     $class .= "lower-average ";
                 }
-                echo "<td class=\"$class\">$cValue</td>\n";
+                $html .= "<td class=\"$class\">$cValue</td>\n";
             }
 
-            echo "<td class=\"average\">$average</td>\n";
-            echo "</tr>\n\n";
+            $html .= "<td class=\"average\">$average</td>\n";
+            $html .= "</tr>\n\n";
         }
-        echo "</table>\n\n\n";
+        $html .= "</table>\n\n\n";
+
+        // Write cache
+        file_put_contents($this->cacheFilename, $html);
+        return $html;
 
 //        echo "<pre>"; print_r ($this->censusData); // debug
 
@@ -184,10 +220,11 @@ class comparison
 
 // -------------------------------------------------------------------------
 
+header('Content-Type: text/html; charset=utf-8');
+
 $comparison = new comparison();
 
-header('Content-Type: text/html; charset=utf-8');
-$comparison->echoComparisonGraph();
+echo $comparison->getComparisonTable();
 
 echo $comparison->getExecutionStats();
 
