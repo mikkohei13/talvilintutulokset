@@ -77,10 +77,10 @@ class comparison
             echo "<p>$name</p>";
         }
 
-        echo "<p>totalRoutesCount</p>";
-        echo "<p>totalLengthMeters</p>";
-        echo "<p>speciesAverage</p>";
-        echo "<p>individualAverage</p>";
+        echo "<p>Reittien määrä</p>";
+        echo "<p>Reittien yhteispituus</p>";
+        echo "<p>Lajeja keskim.</p>";
+        echo "<p>Yksilöitä keskim.</p>";
         echo "</div>";
 
         // Census results
