@@ -534,7 +534,8 @@ $fullNames['Larussp'] = "Lokkilaji";
 
 // Mammals
 $fullNames['Sciurus vulgaris'] = "Orava";
-$fullNames['Odocoileus virginianus'] = "Valkohäntäpeura";
+$fullNames['Odocoileus virginianus'] = "Valkohäntäkauris";
+$fullNames['Valkohäntäpeura'] = "Valkohäntäkauris";
 $fullNames['Capreolus capreolus'] = "Metsäkauris";
 $fullNames['Alces alces'] = "Hirvi";
 $fullNames['Vulpes vulpes'] = "Kettu";
