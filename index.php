@@ -19,7 +19,7 @@ class talvilinnut
     public $routeListHTML = "";
     public $citingHTML = "
         <p id=\"talvilintutulokset-cite\">
-            <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">LUOMUS</a>, Helsingin yliopisto.</span>
+            <span class=\"data\">Data: <a href=\"http://www.luomus.fi/fi/talvilintulaskennat\">Luomus</a>, Helsingin yliopisto.</span>
             <span class=\"service\">Powered by <a href=\"https://github.com/mikkohei13/talvilintutulokset\">talvilintutulokset</a></span>
         </p>
     ";
