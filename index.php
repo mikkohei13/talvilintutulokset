@@ -174,8 +174,10 @@ class talvilinnut
         $routeCount = 0;
         $individualAverageHelper = 0;
         $speciesAverageHelper = 0;
+        $html = "";
 
-    	$html = "<h4>" . $this->title . ":</h4>";
+        $html .= "<h4>" . $this->title . "</h4>";
+
     	foreach ($this->routeArray as $itemNumber => $routeData)
     	{
             // Multibyte ucfirst municipality name
@@ -579,7 +581,6 @@ if (isset($_GET['stats']))
     // Return as HTML
     else
     {
-        header('Content-Type: text/html; charset=utf-8');
         $talvilinnut->startHTML();
         $talvilinnut->echoStatsGraph();
         echo $talvilinnut->getCitingHTML();
@@ -591,18 +592,16 @@ if (isset($_GET['stats']))
 elseif (isset($_GET['document_id']))
 {
     $talvilinnut->startHTML();
-    echo $talvilinnut->getStyles();
     echo $talvilinnut->getSingleRouteHTML();
     $talvilinnut->endHTML();
 }
 // Stats for area or whole Finland, returned as HTML
 else
 {
-    header('Content-Type: text/html; charset=utf-8');
-    echo $talvilinnut->getStyles();
+    $talvilinnut->startHTML();
     echo $talvilinnut->routeListHTML;
     echo $talvilinnut->getCitingHTML();
-    echo $talvilinnut->getExecutionStats();
+    $talvilinnut->endHTML();
 }
 
 

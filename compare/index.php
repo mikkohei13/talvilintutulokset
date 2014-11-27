@@ -71,15 +71,16 @@ class comparison
         return round($time, 3);
     }
 
-    public function getExecutionStats($source = "api")
+    public function getExecutionStats($source = "json")
     {
-        return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source: $source, time " . $this->getExcecutionTime() . " s</p>";
+        return "<p id=\"talvilintutulokset-debug\" style=\"display: none;\">source: $source, time " . $this->getExcecutionTime() . " s</p>";
     }
 
     public function getComparisonTable()
     {
         include "vernacular_names.php";
-        $html = "";
+
+        $html = $this->getStartHTML();
 
         // Table start & header row
         $html .= "<table id=\"talvilinnut-comparison-table\">";
@@ -157,6 +158,8 @@ class comparison
         }
         $html .= "</table>\n\n\n";
 
+        $html .= $this->getEndHTML();
+
         // Write cache
         $this->writeCache($html);
         return $html;
@@ -170,18 +173,18 @@ class comparison
         file_put_contents($this->cacheFilename, $data);
     }
 
-    public function startHTML()
+    // HTML cannot be just echoed, because it may be cached
+    public function getStartHTML()
     {
-        header('Content-Type: text/html; charset=utf-8');
-        echo "
+        return "
         <link rel=\"stylesheet\" href=\"../styles.css\" type='text/css' media='all' />
         <div id=\"talvilintutulokset-main\">
         ";
     }
 
-    public function endHTML()
+    public function getEndHTML()
     {
-        echo "
+        return "
         </div>
         ";
     }
@@ -191,14 +194,11 @@ class comparison
 
 // -------------------------------------------------------------------------
 
-$comparison = new comparison();
+header('Content-Type: text/html; charset=utf-8');
 
-$comparison->startHTML();
+$comparison = new comparison();
 
 echo $comparison->getComparisonTable();
 echo $comparison->getExecutionStats();
-
-$comparison->endHTML();
-
 
 ?>
