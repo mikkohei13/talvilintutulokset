@@ -1,0 +1,57 @@
+#talvilintutulokset-main
+{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#talvilintutulokset-cite
+{
+	color: #007fc2;
+}
+
+.census
+{
+    float: left;
+}
+pre
+{
+    clear: both;
+}
+.average
+{
+    background-color: #ffc;
+}
+.highest
+{
+    background-color: #cfc;
+}
+.higher-average
+{
+    color: green;
+}
+.lower-average
+{
+    color: red;
+}
+
+#talvilinnut-comparison-table
+{
+    border-collapse: collapse;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 93%;
+}
+
+#talvilinnut-comparison-table td, #talvilinnut-comparison-table th {
+    border: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
+    text-align: right;
+    padding: 0.2em;
+}
+#talvilinnut-comparison-table th
+{
+    border-bottom: 3px solid #ddd;
+}
+#talvilinnut-comparison-table .name
+{
+    text-align: left;
+}
+

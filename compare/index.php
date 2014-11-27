@@ -76,67 +76,10 @@ class comparison
         return "<p id=\"talvilintutulokset-debug\" style=\"display: block;\">source: $source, time " . $this->getExcecutionTime() . " s</p>";
     }
 
-    public function getStyles()
-    {
-        $styles = "
-            <style>
-            .census
-            {
-                float: left;
-            }
-            pre
-            {
-                clear: both;
-            }
-            .average
-            {
-                background-color: #ffc;
-            }
-            .highest
-            {
-                background-color: #cfc;
-            }
-            .higher-average
-            {
-                color: green;
-            }
-            .lower-average
-            {
-                color: red;
-            }
-
-            #talvilinnut-comparison-table
-            {
-                border-collapse: collapse;
-                font-family: Helvetica, Arial, sans-serif;
-                font-size: 93%;
-            }
-
-            #talvilinnut-comparison-table td, #talvilinnut-comparison-table th {
-                border: 1px solid #eee;
-                border-bottom: 1px solid #ddd;
-                text-align: right;
-                padding: 0.2em;
-            }
-            #talvilinnut-comparison-table th
-            {
-                border-bottom: 3px solid #ddd;
-            }
-            #talvilinnut-comparison-table .name
-            {
-                text-align: left;
-            }
-            </style>
-        ";
-
-        return $styles;
-    }
-
     public function getComparisonTable()
     {
         include "vernacular_names.php";
         $html = "";
-        $html .= $this->getStyles();
 
         // Table start & header row
         $html .= "<table id=\"talvilinnut-comparison-table\">";
@@ -227,17 +170,35 @@ class comparison
         file_put_contents($this->cacheFilename, $data);
     }
 
+    public function startHTML()
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        echo "
+        <link rel=\"stylesheet\" href=\"../styles.css\" type='text/css' media='all' />
+        <div id=\"talvilintutulokset-main\">
+        ";
+    }
+
+    public function endHTML()
+    {
+        echo "
+        </div>
+        ";
+    }
+
+
 }
 
 // -------------------------------------------------------------------------
 
-header('Content-Type: text/html; charset=utf-8');
-
 $comparison = new comparison();
 
-echo $comparison->getComparisonTable();
+$comparison->startHTML();
 
+echo $comparison->getComparisonTable();
 echo $comparison->getExecutionStats();
+
+$comparison->endHTML();
 
 
 ?>

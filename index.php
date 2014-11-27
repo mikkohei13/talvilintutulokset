@@ -540,6 +540,22 @@ class talvilinnut
         </p>";
     }
 
+    public function startHTML()
+    {
+        header('Content-Type: text/html; charset=utf-8');
+        echo "
+        <link rel=\"stylesheet\" href=\"styles.css\" type='text/css' media='all' />
+        <div id=\"talvilintutulokset-main\">
+        ";
+    }
+
+    public function endHTML()
+    {
+        echo "
+        </div>
+        ";
+    }
+
 }
 
 // -------------------------------------------------------------------------
@@ -564,21 +580,26 @@ if (isset($_GET['stats']))
     else
     {
         header('Content-Type: text/html; charset=utf-8');
+        $talvilinnut->startHTML();
         $talvilinnut->echoStatsGraph();
         echo $talvilinnut->getCitingHTML();
         echo $talvilinnut->getExecutionStats();
+        $talvilinnut->endHTML();
     }
 }
 // Single route stats compared to multiple routes stats
 elseif (isset($_GET['document_id']))
 {
-    header('Content-Type: text/html; charset=utf-8');
+    $talvilinnut->startHTML();
+    echo $talvilinnut->getStyles();
     echo $talvilinnut->getSingleRouteHTML();
+    $talvilinnut->endHTML();
 }
 // Stats for area or whole Finland, returned as HTML
 else
 {
     header('Content-Type: text/html; charset=utf-8');
+    echo $talvilinnut->getStyles();
     echo $talvilinnut->routeListHTML;
     echo $talvilinnut->getCitingHTML();
     echo $talvilinnut->getExecutionStats();
