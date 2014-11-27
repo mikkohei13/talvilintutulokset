@@ -10,9 +10,10 @@ Hakee datan Luomuksen verkkopalvelusta:
 Lintuyhdistyksen aluekoodi annetaan sovellukselle area-paramterina. Jos area-parametria ei anna, näyttää sovellus datan koko Suomen alueelta. Stats-parametrin lisääminen näyttää laji- ja yksilömäärätilaston.
 
 * Kaikki reitit: http://tringa.fi/tools/talvilintutulokset/
-* Kaikki tilastot: http://tringa.fi/tools/talvilintutulokset/?stats (HIDAS!)
+* Kaikki tilastot: http://tringa.fi/tools/talvilintutulokset/?stats (hidas)
 * Vain alueen 21 (= Tringa) reitit: http://tringa.fi/tools/talvilintutulokset/?area=21
 * Vain alueen 21 (= Tringa) tilastot: http://tringa.fi/tools/talvilintutulokset/?area=21&stats
+* Syyslaskentojen vertailu 2008-2014 aleeulta 21 (= Tringa) http://tringa.fi/tools/talvilintutulokset/compare/?area=21&censuses=2009-1,2010-1,2011-1,2012-1,2013-1,2014-1
 
 ### Aluekoodit:
 
