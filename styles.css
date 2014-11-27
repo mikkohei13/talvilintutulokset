@@ -22,15 +22,15 @@ pre
 }
 .highest
 {
-    background-color: #cfc;
+	font-weight: bold;
 }
 .higher-average
 {
-    color: green;
+    background-color: #cfc;
 }
 .lower-average
 {
-    color: red;
+    background-color: #fcc;
 }
 
 #talvilinnut-comparison-table

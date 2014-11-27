@@ -51,7 +51,7 @@ class comparison
     }
 
     // TODO: move to utils?
-    public function fileIsOld($filename, $hours = 1)
+    public function fileIsOld($filename, $hours = 0) // 0 = cache off // debug
     {
         // @ because file might not exist
         if (time() - @filemtime($filename) > ($hours * 3600))
@@ -79,8 +79,10 @@ class comparison
     public function getComparisonTable()
     {
         include "vernacular_names.php";
+        $html = "";
 
-        $html = $this->getStartHTML();
+        $html .= $this->getStartHTML();
+        $html .= $this->getCaption();
 
         // Table start & header row
         $html .= "<table id=\"talvilinnut-comparison-table\">";
@@ -142,11 +144,15 @@ class comparison
                 {
                     $class .= "highest ";
                 }
-                if ($cValue > $average)
+                if (0 == $cValue)
+                {
+                    // No new class
+                }
+                elseif ($cValue >= ($average * 2))
                 {
                     $class .= "higher-average ";
                 }
-                elseif ($cValue < $average)
+                elseif ($cValue <= ($average / 2))
                 {
                     $class .= "lower-average ";
                 }
@@ -186,6 +192,21 @@ class comparison
     {
         return "
         </div>
+        ";
+    }
+
+    public function getCaption()
+    {
+        return "
+        <p id=\"talvilintutulokset-caption\">
+        Taulukko esittää lintujen määrän per 10 laskentakilometriä.
+        <br />
+        Merkinnät:
+        <span class='higher-average'>ainakin 100 % enemmän kuin keskimäärin</span>,
+        <span class='lower-average'>ainakin 50 % vähemmän kuin keskimäärin</span>,
+        <span class='highest'>ennätys</span>,
+        <span class='average'>keskiarvo</span>
+        </p>
         ";
     }
 
