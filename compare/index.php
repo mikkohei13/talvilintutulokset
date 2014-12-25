@@ -25,7 +25,7 @@ class comparison
         $censuses = $_GET['censuses'];
         if (preg_match('/^[0-9,\-]+$/i', $censuses) === 0)
         {
-            exit("Virheellinen arvo census-muuttujassa; vain numeroita, tavuviivoja (-) ja pilkkuja (,)");
+            exit("Puuttuva tai virheellinen arvo censuses-muuttujassa; vain numeroita, tavuviivoja (-) ja pilkkuja (,)");
         }
         $censusesArray = explode(",", $censuses);
 
