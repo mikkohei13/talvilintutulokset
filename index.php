@@ -199,6 +199,13 @@ class talvilinnut
             $individualAverageHelper = $individualAverageHelper + $routeData['individualCount'];
             $speciesAverageHelper = $speciesAverageHelper + $routeData['speciesCount'];
     	}
+
+        // Stop if no routes
+        if (0 == $routeCount)
+        {
+            return;
+        }
+
         $this->totalRoutesCount = $routeCount;
         $this->individualAverage = $individualAverageHelper / $routeCount;
         $this->speciesAverage = $speciesAverageHelper / $routeCount;

@@ -1,9 +1,11 @@
 
 # Sovellus talvilintulaskentojen tulosten näyttämiseen
 
-Hakee datan Luomuksen verkkopalvelusta:
+Hakee datan Luomuksen rajapinnoista:
 * Luettelo laskennoista JSON-muodossa, esim. http://koivu.luomus.fi/talvilinnut/census.php?year=2014&census=1
 * Yksittäisen laskennat tulokset XML-muodossa, esim. http://hatikka.fi/?page=view&id=1134228&source=2&xsl=false
+
+Koska kymmenien laskentojen tulosten hakeminen rajapintojen kautta on hieman hidasta, palvelu tallettaa tulokset välimuistiin ja näyttää ne sieltä. Tällöin ensimmäisen sivulatauksen jälkeen sivut toimivat nopeasti. Luettelo lasketuista reiteistä ja uusien laskentojen tulokset päivitetään välimuistiin yhden tunnin, ja vanhojen laskentojen tulokset viikon välein.
 
 ## Käyttö:
 

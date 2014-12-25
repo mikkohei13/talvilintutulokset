@@ -51,7 +51,7 @@ class comparison
     }
 
     // TODO: move to utils?
-    public function fileIsOld($filename, $hours = 0) // 0 = cache off // debug
+    public function fileIsOld($filename, $hours = 1) // 0 = cache off // debug
     {
         // @ because file might not exist
         if (time() - @filemtime($filename) > ($hours * 3600))
