@@ -321,7 +321,7 @@ class talvilinnut
         {
             if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
             {
-                $results['lengthMeters'] = $siteFact->MeasurementOrFactAtomised->LowerValue;
+                $results['lengthMeters'] = (int) $siteFact->MeasurementOrFactAtomised->LowerValue;
             }
         }
 
@@ -521,9 +521,11 @@ class talvilinnut
         // Single route stats
         $singleRouteResults = $this->parseSingleRouteXML($this->routesXMLarray[$documentID]);
 
+        // Delete non-information
+        unset($singleRouteResults['speciesOnRoutes']);
+
         // Harmonizing names
         $singleRouteResults['speciesCounts'] = $this->convertNames($singleRouteResults['speciesCounts']);
-        $singleRouteResults['speciesOnRoutes'] = $this->convertNames($singleRouteResults['speciesOnRoutes']);
 
         print_r ($singleRouteResults);
 
@@ -536,7 +538,6 @@ class talvilinnut
         echo "\n";
         print_r ($this->totalRoutesCount);
 
-        exit();
 //        print_r ($areaStats);
 
         echo "
@@ -552,7 +553,16 @@ class talvilinnut
             </style>
         ";
 
+        foreach ($singleRouteResults['speciesCounts'] as $sp => $localCount)
+        {
+            echo "\n<p>$sp ";
+            echo round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2);
+            echo " | ";
+            echo round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2);
+            echo "</p>";
+        }
 
+/*
         $i = 0;
         $c = 0;
         // Goes through all species from given area
@@ -594,6 +604,7 @@ class talvilinnut
         Lajeja: " . $i . " <br />
         Yksilöitä: " . $c . " <br />
         </p>";
+        */
     }
 
     public function startHTML()
