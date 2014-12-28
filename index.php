@@ -500,23 +500,7 @@ class talvilinnut
         $documentID = (int) $_GET['document_id'];
         $area = (int) $_GET['area'];
 
-        echo $documentID; // debug
-
-// Not needed, since already fethsed among other routes
-//        $options['documentID'] = $documentID;
-//        $this->fetchSingleRouteDataFromCacheOrApi($options);
-
-//        var_dump(get_object_vars($this)); // debug
-
-        // TODO: real data!
-        // file_get_contents(http://127.0.0.1:4567/tests/talvilintutulokset/?area=3&stats&json): failed to open stream: Connection refuse
-//        $json = file_get_contents("http://" . $_SERVER['HTTP_HOST'] . $this->basePath . "?area=" . $area . "&stats&json");
-
-//        $json = file_get_contents("cache/test.json");
-//        $areaStats = json_decode($json, TRUE);
-
-        // This count
-//        print_r ($this->routesXMLarray);
+//        echo $documentID; // debug
 
         // Single route stats
         $singleRouteResults = $this->parseSingleRouteXML($this->routesXMLarray[$documentID]);
@@ -527,6 +511,8 @@ class talvilinnut
         // Harmonizing names
         $singleRouteResults['speciesCounts'] = $this->convertNames($singleRouteResults['speciesCounts']);
 
+/*
+        // DEBUG
         print_r ($singleRouteResults);
 
         echo "\n<p>---------------------------------------------------------</p>\n";
@@ -537,8 +523,8 @@ class talvilinnut
         print_r ($this->totalLengthMeters);
         echo "\n";
         print_r ($this->totalRoutesCount);
+*/
 
-//        print_r ($areaStats);
 
         echo "
             <style>
@@ -553,14 +539,21 @@ class talvilinnut
             </style>
         ";
 
+        echo "<table>";
+        echo "<tr>
+            <th>Laji</th>
+            <th>Reitillä</th>
+            <th>Alueella</th>
+        </tr>";
         foreach ($singleRouteResults['speciesCounts'] as $sp => $localCount)
         {
-            echo "\n<p>$sp ";
-            echo round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2);
-            echo " | ";
-            echo round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2);
-            echo "</p>";
+            echo "<tr>";
+            echo "<td>$sp</td>";
+            echo "<td>" . round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2) . "</td>";
+            echo "<td>" . round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2) . "</td>";
+            echo "</tr>";
         }
+        echo "</table>";
 
 /*
         $i = 0;
