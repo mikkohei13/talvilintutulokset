@@ -551,8 +551,22 @@ class talvilinnut
         {
             echo "<tr>";
             echo "<td class=\"name\">$sp</td>";
-            echo "<td>" . round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2) . "</td>";
-            echo "<td>" . round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2) . "</td>";
+
+            $local = round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2);
+            $area = round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2);
+
+            $class = "";
+            if ($local >= 2 * $area)
+            {
+                $class = "higher-average";
+            }
+            elseif ($local <= 0.5 * $area)
+            {
+                $class = "lower-average";
+            }
+
+            echo "<td class=\"$class\">$local</td>";
+            echo "<td>$area</td>";
             echo "</tr>";
         }
         echo "</table>";
