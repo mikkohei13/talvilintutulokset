@@ -537,9 +537,11 @@ class talvilinnut
                 background-color: #fcc;
             }
             </style>
+            <link rel=\"stylesheet\" href=\"styles.css\" type=\"text/css\" media=\"all\">
         ";
 
-        echo "<table>";
+        echo "<h4>Lajien runsaus laskennassa $documentID, yksilöä / 10 km:</hr>";
+        echo "<table id=\"talvilinnut-comparison-table\">";
         echo "<tr>
             <th>Laji</th>
             <th>Reitillä</th>
@@ -548,7 +550,7 @@ class talvilinnut
         foreach ($singleRouteResults['speciesCounts'] as $sp => $localCount)
         {
             echo "<tr>";
-            echo "<td>$sp</td>";
+            echo "<td class=\"name\">$sp</td>";
             echo "<td>" . round($localCount / ($singleRouteResults['lengthMeters'] / 10000), 2) . "</td>";
             echo "<td>" . round($this->speciesCounts[$sp] / ($this->totalLengthMeters / 10000), 2) . "</td>";
             echo "</tr>";
