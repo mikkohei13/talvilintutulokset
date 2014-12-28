@@ -289,6 +289,7 @@ class talvilinnut
 
             @$this->speciesCounts[$sp] = $results['speciesCounts'];
             @$this->speciesOnRoutes[$sp] = $results['speciesOnRoutes'];
+            $totalLengthMeters = $totalLengthMeters + $results['lengthMeters'];
 
             // Route count
             $i++;
@@ -315,7 +316,7 @@ class talvilinnut
         {
             if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
             {
-                $totalLengthMeters = $totalLengthMeters + $siteFact->MeasurementOrFactAtomised->LowerValue;
+                $results['lengthMeters'] = $siteFact->MeasurementOrFactAtomised->LowerValue;
             }
         }
 
@@ -496,8 +497,9 @@ class talvilinnut
 
         echo $documentID; // debug
 
-        $options['documentID'] = $documentID;
-        $this->fetchSingleRouteDataFromCacheOrApi($options);
+// Not needed, since already fethsed among other routes
+//        $options['documentID'] = $documentID;
+//        $this->fetchSingleRouteDataFromCacheOrApi($options);
 
 //        var_dump(get_object_vars($this)); // debug
 
@@ -510,6 +512,11 @@ class talvilinnut
 
         // This count
 //        print_r ($this->routesXMLarray);
+
+        // Single route stats
+        $singleRouteResults = $this->parseSingleRouteXML($this->routesXMLarray[$documentID]);
+        print_r ($singleRouteResults);
+        echo "\n<p>---------------------------------------------------------</p>\n";
 
         // All route stats from set area
         print_r ($this->speciesCounts);
