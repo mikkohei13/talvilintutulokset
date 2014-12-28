@@ -33,7 +33,7 @@ class comparison
         foreach ($censusesArray as $censusKey => $censusID)
         {
             $censusIDparts = explode("-", $censusID);
-            $json = file_get_contents("http://tringa.fi/tools/talvilintutulokset-DEV/?area=$area&stats&json&year=" . $censusIDparts[0] . "&census=" . $censusIDparts[1]);
+            $json = file_get_contents("http://tringa.fi/tools/talvilintutulokset/?area=$area&stats&json&year=" . $censusIDparts[0] . "&census=" . $censusIDparts[1]);
             $this->censusData[$censusID] = json_decode($json, TRUE);
         }
     }
