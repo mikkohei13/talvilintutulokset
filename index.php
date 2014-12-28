@@ -285,48 +285,11 @@ class talvilinnut
         // Goes through all routes
         foreach ($this->routesXMLarray as $routeXML)
         {
-            $dataset = $routeXML->DataSet;
+            $results = $this->parseSingleRouteXML($routeXML);
 
-            // Finds and saves route length
-            foreach ($dataset->Gathering->SiteMeasurementsOrFacts->SiteMeasurementOrFact as $siteFact)
-            {
-                if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
-                {
-                    $totalLengthMeters = $totalLengthMeters + $siteFact->MeasurementOrFactAtomised->LowerValue;
-                }
-            }
+            @$this->speciesCounts[$sp] = $results['speciesCounts'];
+            @$this->speciesOnRoutes[$sp] = $results['speciesOnRoutes'];
 
-            // Finds and saves route length
-            foreach ($dataset->Units as $unit)
-            {
-                // Basic and extra species from different units
-                foreach ($unit as $species)
-                {
-                    $measurement = $species->MeasurementsOrFacts->MeasurementOrFact;
-                    $sp = "";
-                    $count = "";
-
-                    // Species' information
-                    foreach ($measurement as $key => $atomized)
-                    {
-                        // Species name
-                        if ($atomized->MeasurementOrFactAtomised->Parameter == "InformalNameString")
-                        {
-                            // Harmonizes casing
-                            $sp = ucfirst(strtolower((string) $atomized->MeasurementOrFactAtomised->LowerValue));
-                        }
-                        // Individual count
-                        elseif ($atomized->MeasurementOrFactAtomised->Parameter == "Yksilömäärä")
-                        {
-                            $count = (int) $atomized->MeasurementOrFactAtomised->LowerValue;
-                        }
-                    }
-
-                    // Finally saves sums to a varibale
-                    @$this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $count;
-                    @$this->speciesOnRoutes[$sp] = $this->speciesOnRoutes[$sp] + 1;
-                }
-            }
             // Route count
             $i++;
         }
@@ -341,6 +304,55 @@ class talvilinnut
         // Saves stats
         $this->totalLengthMeters = $totalLengthMeters;
         $this->totalRoutesCount = $i;
+    }
+
+    public function parseSingleRouteXML($routeXML)
+    {
+       $dataset = $routeXML->DataSet;
+
+        // Finds and saves route length
+        foreach ($dataset->Gathering->SiteMeasurementsOrFacts->SiteMeasurementOrFact as $siteFact)
+        {
+            if ($siteFact->MeasurementOrFactAtomised->Parameter == "ReitinPituus")
+            {
+                $totalLengthMeters = $totalLengthMeters + $siteFact->MeasurementOrFactAtomised->LowerValue;
+            }
+        }
+
+        foreach ($dataset->Units as $unit)
+        {
+            // Basic and extra species from different units
+            foreach ($unit as $species)
+            {
+                $measurement = $species->MeasurementsOrFacts->MeasurementOrFact;
+                $sp = "";
+                $count = "";
+
+                // Species' information
+                foreach ($measurement as $key => $atomized)
+                {
+                    // Species name
+                    if ($atomized->MeasurementOrFactAtomised->Parameter == "InformalNameString")
+                    {
+                        // Harmonizes casing
+                        $sp = ucfirst(strtolower((string) $atomized->MeasurementOrFactAtomised->LowerValue));
+                    }
+                    // Individual count
+                    elseif ($atomized->MeasurementOrFactAtomised->Parameter == "Yksilömäärä")
+                    {
+                        $count = (int) $atomized->MeasurementOrFactAtomised->LowerValue;
+                    }
+                }
+
+                // Finally saves sums to a varibale
+                @$speciesCounts[$sp] = $speciesCounts[$sp] + $count;
+                @$speciesOnRoutes[$sp] = $speciesOnRoutes[$sp] + 1;
+            }
+        }
+
+        $results['speciesCounts'] = $speciesCounts;
+        $results['speciesOnRoutes'] = $speciesOnRoutes;
+        return $results;
     }
 
     public function echoStatsGraph()
@@ -482,23 +494,32 @@ class talvilinnut
         $documentID = (int) $_GET['document_id'];
         $area = (int) $_GET['area'];
 
+        echo $documentID; // debug
 
-        echo $documentID;
         $options['documentID'] = $documentID;
         $this->fetchSingleRouteDataFromCacheOrApi($options);
-        $this->countEveryRouteStats();
 
 //        var_dump(get_object_vars($this)); // debug
 
         // TODO: real data!
         // file_get_contents(http://127.0.0.1:4567/tests/talvilintutulokset/?area=3&stats&json): failed to open stream: Connection refuse
 //        $json = file_get_contents("http://" . $_SERVER['HTTP_HOST'] . $this->basePath . "?area=" . $area . "&stats&json");
-        $json = file_get_contents("cache/test.json");
 
-        $areaStats = json_decode($json, TRUE);
+//        $json = file_get_contents("cache/test.json");
+//        $areaStats = json_decode($json, TRUE);
 
+        // This count
+//        print_r ($this->routesXMLarray);
+
+        // All route stats from set area
         print_r ($this->speciesCounts);
-        print_r ($areaStats);
+        print_r ($this->speciesOnRoutes);
+        print_r ($this->totalLengthMeters);
+        echo "\n";
+        print_r ($this->totalRoutesCount);
+
+        exit();
+//        print_r ($areaStats);
 
         echo "
             <style>
@@ -516,9 +537,11 @@ class talvilinnut
 
         $i = 0;
         $c = 0;
+        // Goes through all species from given area
         foreach ($this->speciesCounts as $species => $count)
         {
             $localAverage = round(($count / ($this->totalLengthMeters / 10000)), 1);
+
             $areaAverage = round(($areaStats['speciesCounts'][$species] / ($areaStats['totalLengthMeters'] / 10000)), 1);
 
             if ($localAverage < $areaAverage)
@@ -604,6 +627,10 @@ if (isset($_GET['stats']))
 // Single route stats compared to multiple routes stats
 elseif (isset($_GET['document_id']))
 {
+    // Count stats
+    $talvilinnut->getEveryRouteData(); // TODO: is this needed here?
+    $talvilinnut->countEveryRouteStats();
+
     $talvilinnut->startHTML();
     echo $talvilinnut->getSingleRouteHTML();
     $talvilinnut->endHTML();
