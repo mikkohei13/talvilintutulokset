@@ -287,8 +287,13 @@ class talvilinnut
         {
             $results = $this->parseSingleRouteXML($routeXML);
 
-            @$this->speciesCounts[$sp] = $results['speciesCounts'];
-            @$this->speciesOnRoutes[$sp] = $results['speciesOnRoutes'];
+            // Add each species' count to global variable
+            foreach ($results['speciesCounts'] as $sp => $temp)
+            {
+                @$this->speciesCounts[$sp] = $this->speciesCounts[$sp] + $results['speciesCounts'][$sp];
+                @$this->speciesOnRoutes[$sp] = $this->speciesOnRoutes[$sp] + $results['speciesOnRoutes'][$sp];
+            }
+
             $totalLengthMeters = $totalLengthMeters + $results['lengthMeters'];
 
             // Route count
@@ -345,7 +350,7 @@ class talvilinnut
                     }
                 }
 
-                // Finally saves sums to a varibale
+                // Finally saves sums to a variable
                 @$speciesCounts[$sp] = $speciesCounts[$sp] + $count;
                 @$speciesOnRoutes[$sp] = $speciesOnRoutes[$sp] + 1;
             }
@@ -515,7 +520,13 @@ class talvilinnut
 
         // Single route stats
         $singleRouteResults = $this->parseSingleRouteXML($this->routesXMLarray[$documentID]);
+
+        // Harmonizing names
+        $singleRouteResults['speciesCounts'] = $this->convertNames($singleRouteResults['speciesCounts']);
+        $singleRouteResults['speciesOnRoutes'] = $this->convertNames($singleRouteResults['speciesOnRoutes']);
+
         print_r ($singleRouteResults);
+
         echo "\n<p>---------------------------------------------------------</p>\n";
 
         // All route stats from set area
