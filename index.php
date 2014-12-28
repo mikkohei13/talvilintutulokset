@@ -470,12 +470,18 @@ class talvilinnut
         return $this->citingHTML;
     }
 
+    /*
+
+    */
     public function getSingleRouteHTML()
     {
+        if (empty($_GET['area']))
+        {
+            exit("Alue pitää valita! (area-parametri)");
+        }
         $documentID = (int) $_GET['document_id'];
         $area = (int) $_GET['area'];
 
-        // TODO: what if area is not set?
 
         echo $documentID;
         $options['documentID'] = $documentID;
