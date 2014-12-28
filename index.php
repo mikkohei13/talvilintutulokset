@@ -189,12 +189,35 @@ class talvilinnut
     		$html .= "
     		<p>
     		<span class=\"date\">" . $this->formatDate($routeData['date']) . "</span>
-    		<span class=\"locality\"><a title=\"Lisätietoja Hatikassa\" href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">" . $muni . ", " . trim($routeData['grid']) .  "</a>:</span>
+    		<span class=\"locality\">" . $muni . ", " . trim($routeData['grid']) .  ":</span>
     		<span class=\"speciesCount\">" . $routeData['speciesCount'] . " lajia,</span>
     		<span class=\"individualCount\">" . $routeData['individualCount'] . " yksilöä</span> 
     		<span class=\"team\"><span>(</span>" . $routeData['team'] . "<span>)</span></span>
-    		</p>\n
-    		";
+            <a title=\"Lisätietoja Hatikassa\" href=\"http://hatikka.fi/?page=view&source=2&id=" . $routeData['documentID'] . "\">havainnot</a>
+            ";
+
+            if (isset($_GET["area"]))
+            {
+                $area = (int) $_GET["area"];
+
+                // TODO: move elsewhere?
+                $year = "";
+                $census = "";
+                if (isset($_GET['year']))
+                {
+                    $year = "&year=" . (int) $_GET['year'];
+                }
+                // Census
+                if (isset($_GET['census']))
+                {
+                    $census = "&census=" . (int) $_GET['census'];
+                }
+
+                $html .= "<a href=\"?area=" . $area . "&document_id=" . $routeData['documentID'] . "$year$census\">tiheydet</a></p>\n";
+            }
+
+            $html .= "</p>\n";
+
             $routeCount++;
             $individualAverageHelper = $individualAverageHelper + $routeData['individualCount'];
             $speciesAverageHelper = $speciesAverageHelper + $routeData['speciesCount'];
@@ -399,7 +422,7 @@ class talvilinnut
             $list .= "
             <tr>
                 <td class=\"number\">$i.</td> 
-                <td class=\"species\"><em>$species</em></td> 
+                <td class=\"species\">$species</td> 
                 <td class=\"count\">$count 
                     <span>yksilöä</span> 
                 </td>
