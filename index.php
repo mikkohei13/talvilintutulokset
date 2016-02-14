@@ -99,28 +99,56 @@ class talvilinnut
 
     public function fetchRoutesFromCacheOrApi()
     {
-		//echo $this->url;
+        $filename = "cache/" . sha1($this->url) . ".json";
 
-		$filename = "cache/" . sha1($this->url) . ".json";
+        if ($this->fileIsOld($filename))
+        {
+            $json = file_get_contents($this->url);
 
-		if ($this->fileIsOld($filename))
-		{
-			$json = file_get_contents($this->url);
-			$this->routeArray = json_decode($json, TRUE);
-            $this->source = $this->url;
+            if (!empty($json))
+            {
+                $this->routeArray = json_decode($json, TRUE);
+                $this->source = $this->url;
 
-			// Save to cache
-			file_put_contents($filename, $json);
-		}
-		else
-		{
-			// Get data from cache
-			$json = file_get_contents($filename);
-			$this->routeArray = json_decode($json, TRUE);
-            $this->source = $filename;
-		}
+                // Save to cache
+                file_put_contents($filename, $json);
+//                echo "D1";
+            }
+            else
+            {
+                // Get data from cache
+                $json = file_get_contents($filename);
+                $this->routeArray = json_decode($json, TRUE);
+                $this->source = $filename;
+//                echo "D2";
+            }
+        }
+        else
+        {
+            // Get data from cache
+            $json = file_get_contents($filename);
+
+            if (!empty($json))
+            {
+                $this->routeArray = json_decode($json, TRUE);
+                $this->source = $filename;
+//                echo "D3";
+            }
+            else
+            {
+                $json = file_get_contents($this->url);
+                $this->routeArray = json_decode($json, TRUE);
+                $this->source = $this->url;
+
+                // Save to cache
+                file_put_contents($filename, $json);
+//                echo "D4"; 
+            }
+        }
+
+//        echo "debug:" . $this->url; echo "json:" . $json;
     }
-
+    
     public function fileIsOld($filename, $hours = 1)
     {
     	// @ because file might not exist
