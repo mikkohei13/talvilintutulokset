@@ -1,7 +1,9 @@
 
 # Sovellus talvilintulaskentojen tulosten näyttämiseen
 
-Hakee datan Luomuksen rajapinnoista:
+**EN**: Tools to display and compare winter bird census data from Luomus API’s as statistics and charts.
+
+**FI**: Hakee datan Luomuksen rajapinnoista:
 * Luettelo laskennoista JSON-muodossa, esim. http://koivu.luomus.fi/talvilinnut/census.php?year=2014&census=1
 * Yksittäisen laskennat tulokset XML-muodossa, esim. http://hatikka.fi/?page=view&id=1134228&source=2&xsl=false
 
