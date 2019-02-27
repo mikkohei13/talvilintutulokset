@@ -1,3 +1,4 @@
+ARCHIVED - USES OLD DEPRECATED API TO FETCH DATA
 
 # Sovellus talvilintulaskentojen tulosten näyttämiseen
 
